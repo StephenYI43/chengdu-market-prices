@@ -1,4 +1,4 @@
-"""Day-one API skeleton. Analytical endpoints are documented, not fabricated."""
+"""Historical analysis API and same-origin local web application."""
 
 import json
 import os
@@ -7,14 +7,26 @@ from pathlib import Path
 from confluent_kafka.admin import AdminClient
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from market_prices.contracts import QuoteEvent, Readiness
+from market_prices.query_api import router
+from market_prices.warehouse import DataError
 
 app = FastAPI(
     title="成都农贸市场价格平台",
-    version="0.1.0",
-    description="第一天：运行状态、数据契约和真实样例链路验证。分析与预测接口待后续实现。",
+    version="0.3.0",
+    description="真实周度历史价格查询、趋势和市场比较。实时任务与预测模型待后续实现。",
 )
+
+app.include_router(router)
+
+
+@app.exception_handler(DataError)
+def data_error(_request, error: DataError):
+    return JSONResponse(
+        status_code=error.status, content={"detail": {"code": error.code, "message": error.message}}
+    )
 
 
 @app.get("/health/live")
@@ -48,3 +60,10 @@ def metadata() -> dict:
 def validate_quote(event: QuoteEvent) -> QuoteEvent:
     """Validate only; this endpoint does not publish or insert records."""
     return event
+
+
+web_directory = Path(
+    os.getenv("MARKET_WEB_DIR", Path(__file__).resolve().parents[2] / "frontend/dist")
+)
+if web_directory.is_dir():
+    app.mount("/", StaticFiles(directory=web_directory, html=True), name="web")

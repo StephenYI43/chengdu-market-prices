@@ -1,0 +1,2154 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "成都农贸市场价格平台",
+    "description": "真实周度历史价格查询、趋势和市场比较。实时任务与预测模型待后续实现。",
+    "version": "0.3.0"
+  },
+  "paths": {
+    "/api/v1/overview": {
+      "get": {
+        "tags": [
+          "历史价格分析"
+        ],
+        "summary": "Overview",
+        "operationId": "overview_api_v1_overview_get",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverviewResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "商品、市场或批次不存在"
+          },
+          "503": {
+            "description": "已验收数据仓库不可用"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/products": {
+      "get": {
+        "tags": [
+          "历史价格分析"
+        ],
+        "summary": "Products",
+        "operationId": "products_api_v1_products_get",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 80,
+              "default": "",
+              "title": "Q"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 40
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Category"
+            }
+          },
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "商品、市场或批次不存在"
+          },
+          "503": {
+            "description": "已验收数据仓库不可用"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/markets": {
+      "get": {
+        "tags": [
+          "历史价格分析"
+        ],
+        "summary": "Markets",
+        "operationId": "markets_api_v1_markets_get",
+        "parameters": [
+          {
+            "name": "district",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 40
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "District"
+            }
+          },
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "商品、市场或批次不存在"
+          },
+          "503": {
+            "description": "已验收数据仓库不可用"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/trends": {
+      "get": {
+        "tags": [
+          "历史价格分析"
+        ],
+        "summary": "Trends",
+        "operationId": "trends_api_v1_trends_get",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 96,
+              "title": "Product Id"
+            }
+          },
+          {
+            "name": "date_from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date From"
+            }
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date To"
+            }
+          },
+          {
+            "name": "district",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 40
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "District"
+            }
+          },
+          {
+            "name": "market_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 96
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Market Id"
+            }
+          },
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrendsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "商品、市场或批次不存在"
+          },
+          "503": {
+            "description": "已验收数据仓库不可用"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/comparisons": {
+      "get": {
+        "tags": [
+          "历史价格分析"
+        ],
+        "summary": "Comparisons",
+        "operationId": "comparisons_api_v1_comparisons_get",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 96,
+              "title": "Product Id"
+            }
+          },
+          {
+            "name": "quote_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Quote Date"
+            }
+          },
+          {
+            "name": "district",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 40
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "District"
+            }
+          },
+          {
+            "name": "market_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 96
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Market Id"
+            }
+          },
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComparisonResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "商品、市场或批次不存在"
+          },
+          "503": {
+            "description": "已验收数据仓库不可用"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/prices": {
+      "get": {
+        "tags": [
+          "历史价格分析"
+        ],
+        "summary": "Prices",
+        "operationId": "prices_api_v1_prices_get",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 96,
+              "title": "Product Id"
+            }
+          },
+          {
+            "name": "date_from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date From"
+            }
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date To"
+            }
+          },
+          {
+            "name": "district",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 40
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "District"
+            }
+          },
+          {
+            "name": "market_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 96
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Market Id"
+            }
+          },
+          {
+            "name": "quote_status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "quoted",
+                    "missing"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Quote Status"
+            }
+          },
+          {
+            "name": "review_only",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Review Only"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "date_desc",
+                "date_asc",
+                "price_asc",
+                "price_desc"
+              ],
+              "type": "string",
+              "default": "date_desc",
+              "title": "Sort"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100000,
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Page Size"
+            }
+          },
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PricesResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "商品、市场或批次不存在"
+          },
+          "503": {
+            "description": "已验收数据仓库不可用"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/prices/export.csv": {
+      "get": {
+        "tags": [
+          "历史价格分析"
+        ],
+        "summary": "Export Prices",
+        "operationId": "export_prices_api_v1_prices_export_csv_get",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 96,
+              "title": "Product Id"
+            }
+          },
+          {
+            "name": "date_from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date From"
+            }
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date To"
+            }
+          },
+          {
+            "name": "district",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 40
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "District"
+            }
+          },
+          {
+            "name": "market_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 96
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Market Id"
+            }
+          },
+          {
+            "name": "quote_status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "quoted",
+                    "missing"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Quote Status"
+            }
+          },
+          {
+            "name": "review_only",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Review Only"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "date_desc",
+                "date_asc",
+                "price_asc",
+                "price_desc"
+              ],
+              "type": "string",
+              "default": "date_desc",
+              "title": "Sort"
+            }
+          },
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "当前筛选下的全部实际报价，UTF-8 BOM CSV",
+            "content": {
+              "text/csv": {}
+            }
+          },
+          "404": {
+            "description": "商品、市场或批次不存在"
+          },
+          "503": {
+            "description": "已验收数据仓库不可用"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health/live": {
+      "get": {
+        "summary": "Live",
+        "operationId": "live_health_live_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Live Health Live Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "summary": "Ready",
+        "operationId": "ready_health_ready_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Readiness"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/metadata": {
+      "get": {
+        "summary": "Metadata",
+        "operationId": "metadata_api_v1_metadata_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Metadata Api V1 Metadata Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/contracts/validate-quote": {
+      "post": {
+        "summary": "Validate Quote",
+        "description": "Validate only; this endpoint does not publish or insert records.",
+        "operationId": "validate_quote_api_v1_contracts_validate_quote_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuoteEvent-Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteEvent-Output"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ComparisonResponse": {
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/DatasetMeta"
+          },
+          "product": {
+            "$ref": "#/components/schemas/Product"
+          },
+          "scope": {
+            "type": "string",
+            "title": "Scope"
+          },
+          "quote_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Quote Date"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/PriceStats"
+          },
+          "common_market_wow_change": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Common Market Wow Change"
+          },
+          "common_market_count": {
+            "type": "integer",
+            "title": "Common Market Count"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/MarketQuote"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "meta",
+          "product",
+          "scope",
+          "quote_date",
+          "summary",
+          "common_market_wow_change",
+          "common_market_count",
+          "items"
+        ],
+        "title": "ComparisonResponse"
+      },
+      "DatasetMeta": {
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "title": "Run Id"
+          },
+          "data_mode": {
+            "type": "string",
+            "const": "historical_snapshot",
+            "title": "Data Mode",
+            "default": "historical_snapshot"
+          },
+          "verified": {
+            "type": "boolean",
+            "title": "Verified",
+            "default": true
+          },
+          "date_start": {
+            "type": "string",
+            "format": "date",
+            "title": "Date Start"
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date",
+            "title": "As Of"
+          },
+          "source_file_sha256": {
+            "type": "string",
+            "title": "Source File Sha256"
+          },
+          "source_filename": {
+            "type": "string",
+            "title": "Source Filename"
+          },
+          "source_url": {
+            "type": "string",
+            "title": "Source Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "run_id",
+          "date_start",
+          "as_of",
+          "source_file_sha256",
+          "source_filename",
+          "source_url"
+        ],
+        "title": "DatasetMeta"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Market": {
+        "properties": {
+          "market_id": {
+            "type": "string",
+            "title": "Market Id"
+          },
+          "district_id": {
+            "type": "string",
+            "title": "District Id"
+          },
+          "district": {
+            "type": "string",
+            "title": "District"
+          },
+          "market": {
+            "type": "string",
+            "title": "Market"
+          }
+        },
+        "type": "object",
+        "required": [
+          "market_id",
+          "district_id",
+          "district",
+          "market"
+        ],
+        "title": "Market"
+      },
+      "MarketQuote": {
+        "properties": {
+          "market_id": {
+            "type": "string",
+            "title": "Market Id"
+          },
+          "district_id": {
+            "type": "string",
+            "title": "District Id"
+          },
+          "district": {
+            "type": "string",
+            "title": "District"
+          },
+          "market": {
+            "type": "string",
+            "title": "Market"
+          },
+          "price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price"
+          },
+          "price_raw": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price Raw"
+          },
+          "quote_status": {
+            "type": "string",
+            "enum": [
+              "quoted",
+              "missing",
+              "not_observed"
+            ],
+            "title": "Quote Status"
+          },
+          "rank": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rank"
+          },
+          "source_row_number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Row Number"
+          },
+          "review_flags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Review Flags"
+          }
+        },
+        "type": "object",
+        "required": [
+          "market_id",
+          "district_id",
+          "district",
+          "market",
+          "price",
+          "price_raw",
+          "quote_status",
+          "rank",
+          "source_row_number",
+          "review_flags"
+        ],
+        "title": "MarketQuote"
+      },
+      "MarketsResponse": {
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/DatasetMeta"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Market"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "meta",
+          "items"
+        ],
+        "title": "MarketsResponse"
+      },
+      "OverviewResponse": {
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/DatasetMeta"
+          },
+          "totals": {
+            "$ref": "#/components/schemas/Totals"
+          },
+          "categories": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Categories"
+          },
+          "districts": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Districts"
+          },
+          "quote_dates": {
+            "items": {
+              "type": "string",
+              "format": "date"
+            },
+            "type": "array",
+            "title": "Quote Dates"
+          },
+          "default_product_id": {
+            "type": "string",
+            "title": "Default Product Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "meta",
+          "totals",
+          "categories",
+          "districts",
+          "quote_dates",
+          "default_product_id"
+        ],
+        "title": "OverviewResponse"
+      },
+      "PriceRecord": {
+        "properties": {
+          "quote_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Quote Date"
+          },
+          "product_id": {
+            "type": "string",
+            "title": "Product Id"
+          },
+          "product_name": {
+            "type": "string",
+            "title": "Product Name"
+          },
+          "product_spec": {
+            "type": "string",
+            "title": "Product Spec"
+          },
+          "product_spec_raw": {
+            "type": "string",
+            "title": "Product Spec Raw"
+          },
+          "unit": {
+            "type": "string",
+            "title": "Unit"
+          },
+          "district": {
+            "type": "string",
+            "title": "District"
+          },
+          "market": {
+            "type": "string",
+            "title": "Market"
+          },
+          "market_id": {
+            "type": "string",
+            "title": "Market Id"
+          },
+          "price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price"
+          },
+          "price_raw": {
+            "type": "string",
+            "title": "Price Raw"
+          },
+          "quote_status": {
+            "type": "string",
+            "enum": [
+              "quoted",
+              "missing"
+            ],
+            "title": "Quote Status"
+          },
+          "missing_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Missing Reason"
+          },
+          "review_flags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Review Flags"
+          },
+          "source_row_number": {
+            "type": "integer",
+            "title": "Source Row Number"
+          },
+          "source_filename": {
+            "type": "string",
+            "title": "Source Filename"
+          },
+          "source_record_id": {
+            "type": "string",
+            "title": "Source Record Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "quote_date",
+          "product_id",
+          "product_name",
+          "product_spec",
+          "product_spec_raw",
+          "unit",
+          "district",
+          "market",
+          "market_id",
+          "price",
+          "price_raw",
+          "quote_status",
+          "missing_reason",
+          "review_flags",
+          "source_row_number",
+          "source_filename",
+          "source_record_id"
+        ],
+        "title": "PriceRecord"
+      },
+      "PriceStats": {
+        "properties": {
+          "observed_market_count": {
+            "type": "integer",
+            "title": "Observed Market Count"
+          },
+          "quoted_market_count": {
+            "type": "integer",
+            "title": "Quoted Market Count"
+          },
+          "missing_market_count": {
+            "type": "integer",
+            "title": "Missing Market Count"
+          },
+          "absent_market_count": {
+            "type": "integer",
+            "title": "Absent Market Count"
+          },
+          "expected_market_count": {
+            "type": "integer",
+            "title": "Expected Market Count"
+          },
+          "market_coverage": {
+            "type": "number",
+            "title": "Market Coverage"
+          },
+          "mean_price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Price"
+          },
+          "median_price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median Price"
+          },
+          "min_price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Price"
+          },
+          "max_price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Price"
+          },
+          "price_range": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price Range"
+          },
+          "ranking_available": {
+            "type": "boolean",
+            "title": "Ranking Available"
+          }
+        },
+        "type": "object",
+        "required": [
+          "observed_market_count",
+          "quoted_market_count",
+          "missing_market_count",
+          "absent_market_count",
+          "expected_market_count",
+          "market_coverage",
+          "mean_price",
+          "median_price",
+          "min_price",
+          "max_price",
+          "price_range",
+          "ranking_available"
+        ],
+        "title": "PriceStats"
+      },
+      "PricesResponse": {
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/DatasetMeta"
+          },
+          "product": {
+            "$ref": "#/components/schemas/Product"
+          },
+          "scope": {
+            "type": "string",
+            "title": "Scope"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "page_size": {
+            "type": "integer",
+            "title": "Page Size"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PriceRecord"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "meta",
+          "product",
+          "scope",
+          "total",
+          "page",
+          "page_size",
+          "items"
+        ],
+        "title": "PricesResponse"
+      },
+      "Product": {
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "title": "Product Id"
+          },
+          "product_name": {
+            "type": "string",
+            "title": "Product Name"
+          },
+          "product_spec": {
+            "type": "string",
+            "title": "Product Spec"
+          },
+          "unit": {
+            "type": "string",
+            "title": "Unit"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "first_observed_week": {
+            "type": "string",
+            "format": "date",
+            "title": "First Observed Week"
+          },
+          "last_observed_week": {
+            "type": "string",
+            "format": "date",
+            "title": "Last Observed Week"
+          },
+          "observed_weeks": {
+            "type": "integer",
+            "title": "Observed Weeks"
+          },
+          "eligible_baseline": {
+            "type": "boolean",
+            "title": "Eligible Baseline"
+          },
+          "current": {
+            "type": "boolean",
+            "title": "Current"
+          }
+        },
+        "type": "object",
+        "required": [
+          "product_id",
+          "product_name",
+          "product_spec",
+          "unit",
+          "category",
+          "first_observed_week",
+          "last_observed_week",
+          "observed_weeks",
+          "eligible_baseline",
+          "current"
+        ],
+        "title": "Product"
+      },
+      "ProductsResponse": {
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/DatasetMeta"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Product"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "meta",
+          "items"
+        ],
+        "title": "ProductsResponse"
+      },
+      "QuoteEvent-Input": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1.0",
+            "title": "Schema Version",
+            "default": "1.0"
+          },
+          "event_id": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Event Id"
+          },
+          "business_key": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Business Key"
+          },
+          "batch_id": {
+            "type": "string",
+            "title": "Batch Id"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "live",
+              "historical_replay"
+            ],
+            "title": "Mode"
+          },
+          "quote_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Quote Date"
+          },
+          "product_name": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Product Name"
+          },
+          "product_spec": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Product Spec"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "元/500克",
+              "元/桶",
+              "元/袋"
+            ],
+            "title": "Unit"
+          },
+          "district": {
+            "type": "string",
+            "minLength": 1,
+            "title": "District"
+          },
+          "market": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Market"
+          },
+          "price_raw": {
+            "type": "string",
+            "title": "Price Raw"
+          },
+          "price": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price"
+          },
+          "quote_status": {
+            "type": "string",
+            "enum": [
+              "quoted",
+              "missing"
+            ],
+            "title": "Quote Status"
+          },
+          "source_url": {
+            "type": "string",
+            "title": "Source Url"
+          },
+          "source_file_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Source File Sha256"
+          },
+          "ingested_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ingested At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "event_id",
+          "business_key",
+          "batch_id",
+          "mode",
+          "quote_date",
+          "product_name",
+          "product_spec",
+          "unit",
+          "district",
+          "market",
+          "price_raw",
+          "quote_status",
+          "source_url",
+          "source_file_sha256",
+          "ingested_at"
+        ],
+        "title": "QuoteEvent"
+      },
+      "QuoteEvent-Output": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1.0",
+            "title": "Schema Version",
+            "default": "1.0"
+          },
+          "event_id": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Event Id"
+          },
+          "business_key": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Business Key"
+          },
+          "batch_id": {
+            "type": "string",
+            "title": "Batch Id"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "live",
+              "historical_replay"
+            ],
+            "title": "Mode"
+          },
+          "quote_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Quote Date"
+          },
+          "product_name": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Product Name"
+          },
+          "product_spec": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Product Spec"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "元/500克",
+              "元/桶",
+              "元/袋"
+            ],
+            "title": "Unit"
+          },
+          "district": {
+            "type": "string",
+            "minLength": 1,
+            "title": "District"
+          },
+          "market": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Market"
+          },
+          "price_raw": {
+            "type": "string",
+            "title": "Price Raw"
+          },
+          "price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price"
+          },
+          "quote_status": {
+            "type": "string",
+            "enum": [
+              "quoted",
+              "missing"
+            ],
+            "title": "Quote Status"
+          },
+          "source_url": {
+            "type": "string",
+            "title": "Source Url"
+          },
+          "source_file_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Source File Sha256"
+          },
+          "ingested_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ingested At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "event_id",
+          "business_key",
+          "batch_id",
+          "mode",
+          "quote_date",
+          "product_name",
+          "product_spec",
+          "unit",
+          "district",
+          "market",
+          "price_raw",
+          "quote_status",
+          "source_url",
+          "source_file_sha256",
+          "ingested_at"
+        ],
+        "title": "QuoteEvent"
+      },
+      "Readiness": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ready",
+              "not_ready"
+            ],
+            "title": "Status"
+          },
+          "kafka": {
+            "type": "boolean",
+            "title": "Kafka"
+          },
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "kafka"
+        ],
+        "title": "Readiness"
+      },
+      "Totals": {
+        "properties": {
+          "source_rows": {
+            "type": "integer",
+            "title": "Source Rows"
+          },
+          "quoted_rows": {
+            "type": "integer",
+            "title": "Quoted Rows"
+          },
+          "missing_rows": {
+            "type": "integer",
+            "title": "Missing Rows"
+          },
+          "products": {
+            "type": "integer",
+            "title": "Products"
+          },
+          "markets": {
+            "type": "integer",
+            "title": "Markets"
+          },
+          "districts": {
+            "type": "integer",
+            "title": "Districts"
+          },
+          "periods": {
+            "type": "integer",
+            "title": "Periods"
+          },
+          "review_flagged_rows": {
+            "type": "integer",
+            "title": "Review Flagged Rows"
+          },
+          "eligible_forecast_series": {
+            "type": "integer",
+            "title": "Eligible Forecast Series"
+          }
+        },
+        "type": "object",
+        "required": [
+          "source_rows",
+          "quoted_rows",
+          "missing_rows",
+          "products",
+          "markets",
+          "districts",
+          "periods",
+          "review_flagged_rows",
+          "eligible_forecast_series"
+        ],
+        "title": "Totals"
+      },
+      "TrendPoint": {
+        "properties": {
+          "observed_market_count": {
+            "type": "integer",
+            "title": "Observed Market Count"
+          },
+          "quoted_market_count": {
+            "type": "integer",
+            "title": "Quoted Market Count"
+          },
+          "missing_market_count": {
+            "type": "integer",
+            "title": "Missing Market Count"
+          },
+          "absent_market_count": {
+            "type": "integer",
+            "title": "Absent Market Count"
+          },
+          "expected_market_count": {
+            "type": "integer",
+            "title": "Expected Market Count"
+          },
+          "market_coverage": {
+            "type": "number",
+            "title": "Market Coverage"
+          },
+          "mean_price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Price"
+          },
+          "median_price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median Price"
+          },
+          "min_price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Price"
+          },
+          "max_price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Price"
+          },
+          "price_range": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price Range"
+          },
+          "ranking_available": {
+            "type": "boolean",
+            "title": "Ranking Available"
+          },
+          "quote_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Quote Date"
+          },
+          "wow_change": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wow Change"
+          },
+          "common_market_wow_change": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Common Market Wow Change"
+          },
+          "common_market_count": {
+            "type": "integer",
+            "title": "Common Market Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "observed_market_count",
+          "quoted_market_count",
+          "missing_market_count",
+          "absent_market_count",
+          "expected_market_count",
+          "market_coverage",
+          "mean_price",
+          "median_price",
+          "min_price",
+          "max_price",
+          "price_range",
+          "ranking_available",
+          "quote_date",
+          "wow_change",
+          "common_market_wow_change",
+          "common_market_count"
+        ],
+        "title": "TrendPoint"
+      },
+      "TrendsResponse": {
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/DatasetMeta"
+          },
+          "product": {
+            "$ref": "#/components/schemas/Product"
+          },
+          "scope": {
+            "type": "string",
+            "title": "Scope"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TrendPoint"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "meta",
+          "product",
+          "scope",
+          "items"
+        ],
+        "title": "TrendsResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

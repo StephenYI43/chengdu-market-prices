@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "application_url": "http://127.0.0.1:18880/",
+  "run_id": "20261124-day2-verified",
+  "checks": {
+    "real_overview_and_charts_rendered": true,
+    "district_filter_updated_mean_and_coverage": true,
+    "missing_quote_filter_preserved_null_prices": true,
+    "csv_download_completed_and_matched_12_filtered_records": true,
+    "seasonal_history_kept_60_observed_weeks_and_current_absence": true,
+    "old_and_new_oil_specifications_kept_98_and_7_weeks": true,
+    "product_change_adapted_date_range": true,
+    "pagination_reached_page_2_of_7": true,
+    "invalid_typed_dates_showed_validation_and_blocked_queries": true,
+    "valid_typed_single_week_range_showed_one_trend_point": true,
+    "market_name_click_updated_scope": true,
+    "mobile_filters_and_charts_fitted_without_page_overflow": true,
+    "temporary_viewport_override_was_reset": true,
+    "no_application_console_errors_observed": true
+  },
+  "mobile_viewport": {"width": 390, "height": 844, "page_content_width": 375},
+  "final_visible_selection": {"product_name": "西红柿", "product_spec": "品相好", "scope": "全部监测市场", "range": "近半年"},
+  "note": "在本机预览与最终Docker入口执行真实浏览器操作，日期输入修复后已在最终入口复测。"
+}

@@ -16,8 +16,7 @@ try {
     & $python scripts/stage_day2.py --source-dir $SourceDir --run-id $RunId
     if ($LASTEXITCODE -ne 0) { throw 'Source staging or wide/long reconciliation failed' }
     if (-not $SkipBuild) {
-        docker compose build api
-        if ($LASTEXITCODE -ne 0) { throw 'Worker image build failed' }
+        & (Join-Path $PSScriptRoot 'build-app.ps1')
     }
     docker compose run --rm --no-deps worker /opt/spark/bin/spark-submit --master 'local[2]' --driver-memory 2g scripts/batch_day2.py --run-id $RunId
     if ($LASTEXITCODE -ne 0) { throw 'Spark curation failed; active warehouse unchanged' }

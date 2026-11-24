@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "run_id": "20261124-day2-verified",
+  "api_url": "http://127.0.0.1:18880",
+  "products_verified": 44,
+  "weekly_points_verified": 4207,
+  "latest_source_rows_verified": 738,
+  "checks": {
+    "verified_snapshot_and_source_match": true,
+    "overview_counts_match_catalog": true,
+    "all_product_specifications_and_units_match": true,
+    "all_market_memberships_match": true,
+    "all_product_trends_match_verified_weekly_data": true,
+    "all_latest_quote_rows_match_original_values": true,
+    "all_latest_market_prices_statuses_and_tied_ranks_match": true,
+    "concurrent_queries_stay_on_same_snapshot": true,
+    "district_price_and_coverage_match": true,
+    "narrow_date_window_keeps_previous_week_context": true,
+    "single_missing_market_does_not_become_zero": true,
+    "pagination_has_no_overlap": true,
+    "price_sort_is_numeric": true,
+    "review_filter_uses_existing_flags": true,
+    "csv_export_matches_all_filtered_records": true,
+    "unknown_product_returns_404": true,
+    "invalid_date_range_returns_422": true,
+    "invalid_pagination_returns_422": true,
+    "same_origin_frontend_is_served": true,
+    "active_warehouse_pointer_unchanged": true
+  },
+  "note": "HTTP结果与独立打开的已验收数据库核对；价格保持原值，未生成预测值。"
+}

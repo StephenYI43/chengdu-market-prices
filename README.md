@@ -2,7 +2,19 @@
 
 基于用户取得的真实周度监测数据，逐步实现历史价格分析、跨市场比较、Kafka与Spark流式处理、周度预测和网页展示。
 
-当前阶段：第二天全量清洗、数据仓库、周度汇总与预测序列筛选。历史分析页面和预测模型尚未实现。
+当前阶段：第三天历史分析网页与查询接口已完成，持续实时任务和预测模型待后续实现。
+
+## 打开价格观察网页
+
+已运行时直接访问 **http://127.0.0.1:18880/** 。网页支持商品规格、日期、区与市场筛选，周度趋势、同日市场比较、报价分页、缺失及复核筛选和CSV导出。
+
+```powershell
+powershell -NoProfile -File scripts/start-day3.ps1
+```
+
+已构建过当前源码，可加 `-SkipBuild`。构建脚本在本机用Node/pnpm打包前端，再将静态文件放入API镜像，同一地址提供网页和接口。需要第一天的开发依赖、Node 24、pnpm 11.13.0和Docker Desktop；仓库数据由第二天流程生成。新电脑可先运行全量清洗，再启动网页。
+
+第三天的验收与复现步骤见 [完成报告](docs/day3-report.md)。当前接口定义见 [接口契约](docs/api-contract.md) 和 `contracts/openapi.json`；`contracts/openapi.day1.json` 保留首日历史版本。
 
 首日验收已通过：738条真实记录经Kafka、Spark Structured Streaming写入Parquet，并由DuckDB核对。见 [完成报告](docs/day1-report.md) 与 [验收结果](docs/evidence/day1-verification.json)。
 
@@ -30,13 +42,24 @@ powershell -NoProfile -File scripts/run-day2.ps1
 - 后端和开发依赖锁定于 `uv.lock`，前端依赖锁定于 `frontend/pnpm-lock.yaml`。
 - Kafka和API仅绑定本机127.0.0.1，不修改已有项目的容器或卷。
 
-## 启动后端与Kafka
+## 构建应用与启动服务
 
 ```powershell
-docker compose up -d --build kafka api
+powershell -NoProfile -File scripts/start-day3.ps1
 ```
 
 接口文档：<http://127.0.0.1:18880/docs>。就绪检查：<http://127.0.0.1:18880/health/ready>。
+
+直接执行 `docker compose build api` 前需先在 `frontend` 下运行 `pnpm build`。推荐使用上述一键脚本，它会在依赖输入变化时安装依赖、编译前端、构建镜像，并等待服务存活后验证数据入口。
+
+## 验证查询接口
+
+```powershell
+$env:PYTHONPATH='D:/bigdata/src'
+.venv/Scripts/python.exe scripts/verify_day3.py
+```
+
+HTTP验收与独立打开的已验收数据库比较全部商品趋势和最新一期明细。结果保存至 `artifacts/day3/api-verification.json`。
 
 ## 重复真实样例验证
 
