@@ -1,0 +1,9 @@
+:root { font-family: system-ui, 'Microsoft YaHei', sans-serif; color: #172a3a; background: #f2f6fa; }
+body { margin: 0; }
+main { max-width: 900px; margin: 12vh auto; padding: 32px; }
+h1 { font-size: clamp(2rem, 5vw, 3.3rem); letter-spacing: -.04em; }
+p { font-size: 1rem; line-height: 1.9; color: #455b70; }
+.eyebrow { color: #176f78; font-weight: 650; }
+section { background: white; padding: 28px; border-radius: 16px; margin-top: 36px; }
+h2 { font-size: 1.2rem; }
+a { color: #116d8b; text-underline-offset: 4px; }

@@ -1,0 +1,30 @@
+{
+  "passed": true,
+  "run_id": "20261124-day1-verified",
+  "spark_version": "4.3.0",
+  "topic": "price.day1.20261124-day1-verified",
+  "quote_date": "2026-11-24",
+  "actual": {
+    "rows": 738,
+    "quoted": 737,
+    "business_keys": 738,
+    "price_sum_control_only": "6593.7000",
+    "markets": 18,
+    "districts": 6,
+    "missing": 1
+  },
+  "checks": {
+    "rows": true,
+    "quoted": true,
+    "missing": true,
+    "business_keys": true,
+    "all_event_ids_match": true,
+    "all_payload_fields_match": true,
+    "price_control_sum_match": true,
+    "original_quote_date_preserved": true,
+    "replay_label_preserved": true,
+    "missing_and_price_semantics_match": true,
+    "duckdb_parquet_counts_match": true
+  },
+  "control_sum_note": "仅用于核对传输完整性，不同单位价格之和不作业务指标"
+}

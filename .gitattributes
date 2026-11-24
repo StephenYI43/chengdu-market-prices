@@ -1,0 +1,3 @@
+* text=auto eol=lf
+# Preserve fixture bytes for SHA-256 checks across Windows and Linux.
+data/samples/*.csv -text whitespace=cr-at-eol

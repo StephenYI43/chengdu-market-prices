@@ -1,0 +1,31 @@
+{
+  "source_filename": "成都农贸市场价格_近两年_长表.csv",
+  "source_url": "https://cddrc.chengdu.gov.cn/cdsfzggw/scjg/pricelist.shtml",
+  "source_provenance": "用户提供的采集结果，文件说明标注来源为成都市发改委；尚未逐期对照官网",
+  "source_file_sha256": "27fecbd0113f3491ad4b27aef8e533837801bc99c1edfff3fcaa513658e718c6",
+  "date_start": "2024-11-26",
+  "date_end": "2026-11-24",
+  "period_count": 105,
+  "frequency": "weekly",
+  "total_rows": 75726,
+  "quoted_rows": 75564,
+  "missing_rows": 162,
+  "date_gap_days": {
+    "7": 104
+  },
+  "market_count": 18,
+  "district_count": 6,
+  "product_names_count": 40,
+  "raw_spec_count": 53,
+  "units": {
+    "元/500克": 71946,
+    "元/桶": 1890,
+    "元/袋": 1890
+  },
+  "sample_quote_date": "2026-11-24",
+  "sample_rows": 738,
+  "sample_missing": 1,
+  "sample_file_sha256": "659c6ebcfa37358ec668ea051fdd57b267e306cb82011e1ca9d0ff224f58acf0",
+  "sample_mode": "historical_replay",
+  "sample_note": "按原记录抽取完整一期，未随机生成、插值或改写任何价格"
+}

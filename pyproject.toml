@@ -1,0 +1,31 @@
+[project]
+name = "chengdu-market-prices"
+version = "0.1.0"
+description = "Real weekly Chengdu market prices: batch, streaming and forecasting"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+  "fastapi==0.165.0",
+  "uvicorn>=0.38,<1",
+  "pydantic==2.14.4",
+  "confluent-kafka==2.16.2",
+  "duckdb==2.0.1",
+  "pyarrow>=18,<30",
+]
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "httpx>=0.28,<1", "ruff>=0.14,<1"]
+ml = [
+  "lightgbm==4.7.0", "statsmodels>=0.14.5,<0.16",
+  "scikit-learn>=1.7,<2", "mlflow>=3,<4", "pandas>=2.2,<3",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]

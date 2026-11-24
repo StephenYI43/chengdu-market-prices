@@ -1,0 +1,128 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "event_id": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Event Id",
+      "type": "string"
+    },
+    "business_key": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Business Key",
+      "type": "string"
+    },
+    "batch_id": {
+      "title": "Batch Id",
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "live",
+        "historical_replay"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "quote_date": {
+      "format": "date",
+      "title": "Quote Date",
+      "type": "string"
+    },
+    "product_name": {
+      "minLength": 1,
+      "title": "Product Name",
+      "type": "string"
+    },
+    "product_spec": {
+      "minLength": 1,
+      "title": "Product Spec",
+      "type": "string"
+    },
+    "unit": {
+      "enum": [
+        "元/500克",
+        "元/桶",
+        "元/袋"
+      ],
+      "title": "Unit",
+      "type": "string"
+    },
+    "district": {
+      "minLength": 1,
+      "title": "District",
+      "type": "string"
+    },
+    "market": {
+      "minLength": 1,
+      "title": "Market",
+      "type": "string"
+    },
+    "price_raw": {
+      "title": "Price Raw",
+      "type": "string"
+    },
+    "price": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Price"
+    },
+    "quote_status": {
+      "enum": [
+        "quoted",
+        "missing"
+      ],
+      "title": "Quote Status",
+      "type": "string"
+    },
+    "source_url": {
+      "title": "Source Url",
+      "type": "string"
+    },
+    "source_file_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Source File Sha256",
+      "type": "string"
+    },
+    "ingested_at": {
+      "format": "date-time",
+      "title": "Ingested At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "event_id",
+    "business_key",
+    "batch_id",
+    "mode",
+    "quote_date",
+    "product_name",
+    "product_spec",
+    "unit",
+    "district",
+    "market",
+    "price_raw",
+    "quote_status",
+    "source_url",
+    "source_file_sha256",
+    "ingested_at"
+  ],
+  "title": "QuoteEvent",
+  "type": "object"
+}

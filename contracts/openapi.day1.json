@@ -1,0 +1,449 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "成都农贸市场价格平台",
+    "description": "第一天：运行状态、数据契约和真实样例链路验证。分析与预测接口待后续实现。",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health/live": {
+      "get": {
+        "summary": "Live",
+        "operationId": "live_health_live_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Live Health Live Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "summary": "Ready",
+        "operationId": "ready_health_ready_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Readiness"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/metadata": {
+      "get": {
+        "summary": "Metadata",
+        "operationId": "metadata_api_v1_metadata_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Metadata Api V1 Metadata Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/contracts/validate-quote": {
+      "post": {
+        "summary": "Validate Quote",
+        "description": "Validate only; this endpoint does not publish or insert records.",
+        "operationId": "validate_quote_api_v1_contracts_validate_quote_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuoteEvent-Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteEvent-Output"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "QuoteEvent-Input": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1.0",
+            "title": "Schema Version",
+            "default": "1.0"
+          },
+          "event_id": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Event Id"
+          },
+          "business_key": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Business Key"
+          },
+          "batch_id": {
+            "type": "string",
+            "title": "Batch Id"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "live",
+              "historical_replay"
+            ],
+            "title": "Mode"
+          },
+          "quote_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Quote Date"
+          },
+          "product_name": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Product Name"
+          },
+          "product_spec": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Product Spec"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "元/500克",
+              "元/桶",
+              "元/袋"
+            ],
+            "title": "Unit"
+          },
+          "district": {
+            "type": "string",
+            "minLength": 1,
+            "title": "District"
+          },
+          "market": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Market"
+          },
+          "price_raw": {
+            "type": "string",
+            "title": "Price Raw"
+          },
+          "price": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price"
+          },
+          "quote_status": {
+            "type": "string",
+            "enum": [
+              "quoted",
+              "missing"
+            ],
+            "title": "Quote Status"
+          },
+          "source_url": {
+            "type": "string",
+            "title": "Source Url"
+          },
+          "source_file_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Source File Sha256"
+          },
+          "ingested_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ingested At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "event_id",
+          "business_key",
+          "batch_id",
+          "mode",
+          "quote_date",
+          "product_name",
+          "product_spec",
+          "unit",
+          "district",
+          "market",
+          "price_raw",
+          "quote_status",
+          "source_url",
+          "source_file_sha256",
+          "ingested_at"
+        ],
+        "title": "QuoteEvent"
+      },
+      "QuoteEvent-Output": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1.0",
+            "title": "Schema Version",
+            "default": "1.0"
+          },
+          "event_id": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Event Id"
+          },
+          "business_key": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Business Key"
+          },
+          "batch_id": {
+            "type": "string",
+            "title": "Batch Id"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "live",
+              "historical_replay"
+            ],
+            "title": "Mode"
+          },
+          "quote_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Quote Date"
+          },
+          "product_name": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Product Name"
+          },
+          "product_spec": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Product Spec"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "元/500克",
+              "元/桶",
+              "元/袋"
+            ],
+            "title": "Unit"
+          },
+          "district": {
+            "type": "string",
+            "minLength": 1,
+            "title": "District"
+          },
+          "market": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Market"
+          },
+          "price_raw": {
+            "type": "string",
+            "title": "Price Raw"
+          },
+          "price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price"
+          },
+          "quote_status": {
+            "type": "string",
+            "enum": [
+              "quoted",
+              "missing"
+            ],
+            "title": "Quote Status"
+          },
+          "source_url": {
+            "type": "string",
+            "title": "Source Url"
+          },
+          "source_file_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Source File Sha256"
+          },
+          "ingested_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ingested At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "event_id",
+          "business_key",
+          "batch_id",
+          "mode",
+          "quote_date",
+          "product_name",
+          "product_spec",
+          "unit",
+          "district",
+          "market",
+          "price_raw",
+          "quote_status",
+          "source_url",
+          "source_file_sha256",
+          "ingested_at"
+        ],
+        "title": "QuoteEvent"
+      },
+      "Readiness": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ready",
+              "not_ready"
+            ],
+            "title": "Status"
+          },
+          "kafka": {
+            "type": "boolean",
+            "title": "Kafka"
+          },
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "kafka"
+        ],
+        "title": "Readiness"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
