@@ -2,9 +2,21 @@
 
 基于用户取得的真实周度监测数据，逐步实现历史价格分析、跨市场比较、Kafka与Spark流式处理、周度预测和网页展示。
 
-当前阶段：第一天的运行环境、项目骨架、数据契约和真实样例链路验证。历史分析与预测功能尚未实现。
+当前阶段：第二天全量清洗、数据仓库、周度汇总与预测序列筛选。历史分析页面和预测模型尚未实现。
 
 首日验收已通过：738条真实记录经Kafka、Spark Structured Streaming写入Parquet，并由DuckDB核对。见 [完成报告](docs/day1-report.md) 与 [验收结果](docs/evidence/day1-verification.json)。
+
+第二天的流程、输出和检查结果见 [完成报告](docs/day2-report.md)、[清洗口径](docs/cleaning-rules.md) 与 [仓库结构](docs/warehouse-schema.md)。
+
+## 全量清洗与周度汇总
+
+```powershell
+powershell -NoProfile -File scripts/run-day2.ps1
+```
+
+默认读取 `D:/bigdatasource` 下的长表与宽表，可用 `-SourceDir` 指定其他目录。流程会构建工作镜像、运行Spark，并使用Python和DuckDB独立复核。已经构建过同一份源码时可以加 `-SkipBuild`。
+
+每次写入新的 `runtime/warehouse/runs/<run_id>/`，只有验收通过后才切换 `runtime/warehouse/current.json`。其中 `warehouse.duckdb` 可直接查询；`artifacts/day2/<run_id>/` 包含预测候选、最新一期汇总、规格映射和质量提示的CSV，均可用WPS打开。CSV只包含实际数据或实际数据的统计，不生成预测值。
 
 ## 输入数据
 

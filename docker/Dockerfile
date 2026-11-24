@@ -10,6 +10,7 @@ COPY src ./src
 COPY scripts ./scripts
 COPY data/samples ./data/samples
 COPY contracts ./contracts
+COPY config ./config
 ENV PATH="/app/.venv/bin:${PATH}" PYTHONPATH=/app/src
 ENV PYSPARK_PYTHON=/app/.venv/bin/python PYSPARK_DRIVER_PYTHON=/app/.venv/bin/python
 RUN mkdir -p /app/runtime /app/artifacts /opt/spark/ivy
