@@ -170,17 +170,20 @@ def main():
                 and task["inserted_rows"] == 0
                 and task["skipped_rows"] == 738
             )
-        network_id = subprocess.check_output(
-            [*compose, "ps", "-q", "api"], cwd=folder, env=env, text=True
-        ).strip()
-        container = json.loads(
-            subprocess.check_output(["docker", "inspect", network_id], text=True)
-        )[0]
-        network = next(iter(container["NetworkSettings"]["Networks"]))
-        network_data = json.loads(
-            subprocess.check_output(["docker", "network", "inspect", network], text=True)
-        )[0]
-        checks["container_network_has_no_external_egress"] = network_data["Internal"] is True
+        internal_only = True
+        for role in ["stream", "forecast", "kafka"]:
+            container_id = subprocess.check_output(
+                [*compose, "ps", "-q", role], cwd=folder, env=env, text=True
+            ).strip()
+            container = json.loads(
+                subprocess.check_output(["docker", "inspect", container_id], text=True)
+            )[0]
+            for network in container["NetworkSettings"]["Networks"]:
+                network_data = json.loads(
+                    subprocess.check_output(["docker", "network", "inspect", network], text=True)
+                )[0]
+                internal_only &= network_data["Internal"] is True
+        checks["compute_and_kafka_networks_have_no_external_egress"] = internal_only
         smoke_id = "handoff-" + datetime.now(UTC).strftime("%Y%m%d%H%M%S")
         run(
             [
@@ -259,7 +262,8 @@ def main():
             "stream_smoke": smoke,
             "scope": (
                 "Windows PowerShell 5.1, actual image load, fresh runtime and Kafka volume, "
-                "internal-only container network; same host Docker daemon."
+                "compute/Kafka use an internal-only backend; API also has a local web bridge; "
+                "same host Docker daemon."
             ),
         }
         (test_root / "verification.json").write_text(

@@ -58,6 +58,7 @@ def compose(images, jars):
         "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/live',timeout=3)",
     )
     api["ports"] = ["127.0.0.1:${MARKET_HTTP_PORT:-18880}:8000"]
+    api["networks"] = ["web", "backend"]
     api["depends_on"] = {"kafka": {"condition": "service_healthy"}}
     stream = service(
         "app",
@@ -91,6 +92,8 @@ def compose(images, jars):
         "raise SystemExit(0 if service_status()['online'] else 1)",
     )
     forecast["environment"]["MLFLOW_ENABLE_TELEMETRY"] = "false"
+    stream["networks"] = ["backend"]
+    forecast["networks"] = ["backend"]
     kafka = {
         "image": images["kafka"]["tag"],
         "platform": "linux/amd64",
@@ -114,6 +117,7 @@ def compose(images, jars):
             "KAFKA_LOG_DIRS": "/var/lib/kafka/data",
         },
         "volumes": ["kafka-data:/var/lib/kafka/data"],
+        "networks": ["backend"],
         "restart": "unless-stopped",
         "mem_limit": "1536m",
         "healthcheck": {
@@ -132,7 +136,7 @@ def compose(images, jars):
         "name": "chengdu-market-demo",
         "services": {"kafka": kafka, "api": api, "stream": stream, "forecast": forecast},
         "volumes": {"kafka-data": {}},
-        "networks": {"default": {"internal": True}},
+        "networks": {"web": {}, "backend": {"internal": True}},
     }
 
 
