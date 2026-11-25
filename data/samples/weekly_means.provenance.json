@@ -1,0 +1,7 @@
+{
+  "source_run_id": "20261124-day2-verified",
+  "source_file_sha256": "27fecbd0113f3491ad4b27aef8e533837801bc99c1edfff3fcaa513658e718c6",
+  "derived_rows": 4207,
+  "file_sha256": "dd6a6b38c851e963230fcf3917e930605765c69daa42a92accfdf71087596a08",
+  "definition": "Real observed weekly market mean; missing values not filled"
+}

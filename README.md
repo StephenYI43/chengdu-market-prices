@@ -2,19 +2,21 @@
 
 基于用户取得的真实周度监测数据，逐步实现历史价格分析、跨市场比较、Kafka与Spark流式处理、周度预测和网页展示。
 
-当前阶段：第四天已加入真实CSV/Excel文件预览与增量导入、持续Kafka/Spark消费、持久化任务及页面通知。预测模型将在后续阶段实现。
+当前阶段：第五天已加入未来1—4周预测、三种方法比较、按时间滚动回测、MLflow本地实验记录，以及新批次入库后的自动重训。
 
 ## 打开价格观察网页
 
 已运行时访问 **http://127.0.0.1:18880/** 。历史分析支持商品规格、日期、区与市场筛选，周趋势、同日比价、分页、缺失及复核筛选和CSV导出。左侧“数据管理”可上传文件，预览分类后确认导入，并查看实际任务状态。
 
 ```powershell
-powershell -NoProfile -File scripts/start-day4.ps1
+powershell -NoProfile -File scripts/start-day5.ps1
 ```
 
 已构建过当前源码，可加 `-SkipBuild`。构建脚本在本机用Node/pnpm打包前端，再将静态文件放入API镜像，同一地址提供网页和接口。需要第一天的开发依赖、Node 24、pnpm 11.13.0和Docker Desktop；仓库数据由第二天流程生成。新电脑可先运行全量清洗，再启动网页。
 
-第四天的流程与验收见 [完成报告](docs/day4-report.md)，第三天的历史分析见 [完成报告](docs/day3-report.md)。当前接口定义见 [接口契约](docs/api-contract.md) 和 `contracts/openapi.json`；`contracts/openapi.day1.json` 保留首日历史版本。
+左侧“周度预测”显示37个可预测规格的未来4周结果、误差参考带、独立时段回测和预测CSV；7个未入选规格保留具体原因。预测结果标注为模型计算值，不写回真实报价表。
+
+第五天的使用与验收见 [完成报告](docs/day5-report.md)，第四天的增量导入见 [完成报告](docs/day4-report.md)。当前接口定义见 [接口契约](docs/api-contract.md) 和 `contracts/openapi.json`；`contracts/openapi.day1.json` 保留首日历史版本。
 
 首日验收已通过：738条真实记录经Kafka、Spark Structured Streaming写入Parquet，并由DuckDB核对。见 [完成报告](docs/day1-report.md) 与 [验收结果](docs/evidence/day1-verification.json)。
 
@@ -45,7 +47,7 @@ powershell -NoProfile -File scripts/run-day2.ps1
 ## 构建应用与启动服务
 
 ```powershell
-powershell -NoProfile -File scripts/start-day4.ps1
+powershell -NoProfile -File scripts/start-day5.ps1
 ```
 
 接口文档：<http://127.0.0.1:18880/docs>。就绪检查：<http://127.0.0.1:18880/health/ready>。

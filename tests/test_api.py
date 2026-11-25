@@ -13,4 +13,5 @@ def test_liveness_and_openapi_contract():
         component = request_schema["$ref"].rsplit("/", 1)[-1]
         assert "price" in spec["components"]["schemas"][component]["properties"]
         assert "/api/v1/contracts/validate-quote" in spec["paths"]
-        assert "/api/v1/forecasts" not in spec["paths"]
+        assert "/api/v1/forecasts" in spec["paths"]
+        assert "/api/v1/forecasts/catalog" in spec["paths"]

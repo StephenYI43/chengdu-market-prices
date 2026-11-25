@@ -1,0 +1,23 @@
+{
+  "date": "2026-11-25",
+  "url": "http://127.0.0.1:18880/#forecasts",
+  "ready_products": 37,
+  "excluded_products": 7,
+  "cutoff": "2026-11-24",
+  "rendered_future_dates": ["2026-12-01", "2026-12-08", "2026-12-15", "2026-12-22"],
+  "rice_naive_forecasts": ["2.8000", "2.8000", "2.8000", "2.8000"],
+  "cucumber_selected_model": "mean4",
+  "cucumber_forecasts": ["3.6180", "3.6180", "3.6180", "3.6180"],
+  "oil_seven_week_exclusion_displayed": true,
+  "three_model_test_metrics_displayed": true,
+  "forecast_svg_rendered": true,
+  "csv_download_completed": true,
+  "csv_rows_labelled_as_predictions": true,
+  "responsive": [
+    {"viewport_width": 1280, "document_width": 1265},
+    {"viewport_width": 390, "document_width": 375}
+  ],
+  "viewport_reset": true,
+  "console_errors": [],
+  "passed": true
+}

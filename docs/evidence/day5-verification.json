@@ -1,0 +1,95 @@
+{
+  "passed": true,
+  "dataset_run_id": "20261124-day2-verified",
+  "model_run_id": "forecast-e2109f7ea70c4cfaaf15afbee2421741",
+  "as_of": "2026-11-24",
+  "ready_products": 37,
+  "forecast_rows": 148,
+  "backtest_rows": 10878,
+  "checks": {
+    "all_25_models_train_only_on_available_targets": true,
+    "selection_truth_available_before_first_holdout_forecast": true,
+    "all_backtest_truths_equal_actual_adequate_market_means": true,
+    "every_forecast_after_cutoff_with_weekly_horizon": true,
+    "no_forecasts_for_seven_excluded_specifications": true,
+    "all_validation_and_holdout_metrics_independently_recomputed": true,
+    "selected_models_use_validation_only": true,
+    "all_baseline_future_values_recomputed_from_real_history": true,
+    "all_reference_band_radii_use_validation_errors": true,
+    "macro_test_mape_matches": true,
+    "catalog_bound_to_verified_data_and_model": true,
+    "all_44_product_api_responses_match_artifacts": true,
+    "all_forecast_exports_are_labelled_and_have_correct_rows": true,
+    "unknown_product_rejected": true,
+    "stale_model_version_rejected": true,
+    "actual_mlflow_run_finished_and_artifacts_persisted": true,
+    "warehouse_pointer_and_database_unchanged": true
+  },
+  "selection_counts": {
+    "naive": 26,
+    "lightgbm": 10,
+    "mean4": 1
+  },
+  "macro_test_mape": 0.020250265563306512,
+  "naive_macro_test_mape": 0.020279669055515544,
+  "largest_test_errors": [
+    {
+      "product": "莴笋",
+      "spec": "品相好",
+      "model": "lightgbm",
+      "test_mape": 0.06697507552405114
+    },
+    {
+      "product": "花菜",
+      "spec": "品相好",
+      "model": "naive",
+      "test_mape": 0.06596079444452736
+    },
+    {
+      "product": "四季豆",
+      "spec": "品相好",
+      "model": "naive",
+      "test_mape": 0.05634167188698741
+    },
+    {
+      "product": "大白菜",
+      "spec": "品相好",
+      "model": "naive",
+      "test_mape": 0.05130878384917858
+    },
+    {
+      "product": "茄子",
+      "spec": "品相好",
+      "model": "lightgbm",
+      "test_mape": 0.04876801396937518
+    }
+  ],
+  "validation_origins": [
+    "2026-04-28",
+    "2026-05-05",
+    "2026-05-12",
+    "2026-05-19",
+    "2026-05-26",
+    "2026-06-02",
+    "2026-06-09",
+    "2026-06-16",
+    "2026-06-23",
+    "2026-06-30",
+    "2026-07-07",
+    "2026-07-14"
+  ],
+  "test_origins": [
+    "2026-08-11",
+    "2026-08-18",
+    "2026-08-25",
+    "2026-09-01",
+    "2026-09-08",
+    "2026-09-15",
+    "2026-09-22",
+    "2026-09-29",
+    "2026-10-06",
+    "2026-10-13",
+    "2026-10-20",
+    "2026-10-27"
+  ]
+}

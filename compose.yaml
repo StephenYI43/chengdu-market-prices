@@ -34,6 +34,7 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
+      target: app
     image: chengdu-market-prices-app:day1
     entrypoint: []
     command: ["/app/.venv/bin/uvicorn", "market_prices.api:app", "--host", "0.0.0.0", "--port", "8000"]
@@ -90,8 +91,8 @@ services:
     ports: !override
       - "127.0.0.1:18882:8000"
     volumes: !override
-      - ./runtime/day4-acceptance:/app/runtime
-      - ./artifacts/day4-acceptance:/app/artifacts
+      - ${MARKET_ACCEPTANCE_RUNTIME:-./runtime/day4-acceptance}:/app/runtime
+      - ${MARKET_ACCEPTANCE_ARTIFACTS:-./artifacts/day4-acceptance}:/app/artifacts
   stream-acceptance:
     extends:
       service: stream
@@ -99,9 +100,39 @@ services:
     environment:
       MARKET_IMPORT_TOPIC: price.imports.acceptance.v1
     volumes: !override
-      - ./runtime/day4-acceptance:/app/runtime
-      - ./artifacts/day4-acceptance:/app/artifacts
+      - ${MARKET_ACCEPTANCE_RUNTIME:-./runtime/day4-acceptance}:/app/runtime
+      - ${MARKET_ACCEPTANCE_ARTIFACTS:-./artifacts/day4-acceptance}:/app/artifacts
       - spark-ivy:/opt/spark/ivy
+  forecast:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: ml
+    image: chengdu-market-prices-forecast:day5
+    entrypoint: []
+    command: ["/app/.venv/bin/python", "scripts/forecast_worker.py"]
+    environment:
+      PYTHONPATH: /app/src
+      MARKET_RUNTIME_DIR: /app/runtime
+      MLFLOW_ENABLE_TELEMETRY: "false"
+    volumes:
+      - ./runtime:/app/runtime
+      - ./artifacts:/app/artifacts
+    restart: unless-stopped
+    mem_limit: 3g
+    healthcheck:
+      test: ["CMD", "/app/.venv/bin/python", "-c", "from market_prices.forecast_store import service_status; raise SystemExit(0 if service_status()['online'] else 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+  forecast-acceptance:
+    extends:
+      service: forecast
+    profiles: ["acceptance"]
+    volumes: !override
+      - ${MARKET_ACCEPTANCE_RUNTIME:-./runtime/day4-acceptance}:/app/runtime
+      - ${MARKET_ACCEPTANCE_ARTIFACTS:-./artifacts/day4-acceptance}:/app/artifacts
   worker:
     image: chengdu-market-prices-app:day1
     profiles: ["tools"]

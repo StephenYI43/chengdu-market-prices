@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "checks": {
+    "real_739_rows_imported": true,
+    "new_dataset_waits_for_its_own_model": true,
+    "old_pinned_model_remains_readable": true,
+    "automatic_retraining_without_manual_command": true,
+    "new_model_bound_to_new_verified_dataset": true,
+    "previous_model_cannot_be_passed_as_latest": true,
+    "production_pointer_and_database_unchanged": true
+  },
+  "baseline_model": "forecast-eed02c11e67b4301a09d2ccf83c05148",
+  "final_model": "forecast-e80f8f3d7b0a40d8a32e60e49443f840",
+  "job_id": "2064c487e9154f34ba09a5f410e70884",
+  "real_imported_rows": 739,
+  "ready_products": 37
+}

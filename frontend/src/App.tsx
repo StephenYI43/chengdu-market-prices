@@ -7,14 +7,17 @@ import { ErrorMessage, Loading, Shell } from './ui';
 import type { Catalog, Market, Overview, Product, Selection } from './types';
 import { DataManager } from './DataManager';
 import { useImportEvents } from './importData';
+import { ForecastPage } from './ForecastPage';
+
+const currentView = () => window.location.hash === '#data-management' ? 'imports' : window.location.hash === '#forecasts' ? 'forecasts' : 'analysis';
 
 export function App() {
   const [revision, setRevision] = useState(0);
   const overview = useResource<Overview>('/api/v1/overview', revision);
   const runId = overview.data?.meta.run_id;
   const live = useImportEvents(runId);
-  const [view, setView] = useState(() => window.location.hash === '#data-management' ? 'imports' : 'analysis');
-  useEffect(() => { const changed = () => setView(window.location.hash === '#data-management' ? 'imports' : 'analysis'); window.addEventListener('hashchange', changed); return () => window.removeEventListener('hashchange', changed); }, []);
+  const [view, setView] = useState(currentView);
+  useEffect(() => { const changed = () => setView(currentView()); window.addEventListener('hashchange', changed); return () => window.removeEventListener('hashchange', changed); }, []);
   const products = useResource<Catalog<Product>>(runId ? endpoint('products', { run_id: runId }) : null, revision);
   const markets = useResource<Catalog<Market>>(runId ? endpoint('markets', { run_id: runId }) : null, revision);
   const error = overview.error ?? products.error ?? markets.error;
@@ -23,6 +26,7 @@ export function App() {
   if (!overview.data || !products.data || !markets.data) return <Shell><main id="main-content" className="initial-state"><Loading text="正在连接已验收的价格数据" /></main></Shell>;
   if (products.data.meta.run_id !== runId || markets.data.meta.run_id !== runId) return <Shell><main id="main-content" className="initial-state"><ErrorMessage message="数据批次未对齐，请重新读取" /><button className="button primary" onClick={refresh}>重新读取</button></main></Shell>;
   if (view === 'imports') return <Shell><DataManager live={live} refreshAnalysis={() => { window.location.hash = '#main-content'; refresh(); }} /></Shell>;
+  if (view === 'forecasts') return <Shell>{live.newRunId ? <div className="new-data-banner"><span>新数据已完成验收，加载后将读取对应批次的预测。</span><button className="button primary" onClick={refresh}>加载新数据</button></div> : null}<ForecastPage key={runId} runId={runId!} defaultProduct={overview.data.default_product_id} /></Shell>;
   return <Shell>{live.newRunId ? <div className="new-data-banner"><span>新一批数据已完成验收，当前图表仍固定在原批次。</span><button className="button primary" onClick={refresh}>加载新数据</button></div> : null}<Dashboard key={`${runId}:${revision}`} overview={overview.data} products={products.data.items} markets={markets.data.items} refresh={refresh} /></Shell>;
 }
 

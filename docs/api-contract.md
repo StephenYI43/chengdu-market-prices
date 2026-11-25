@@ -21,6 +21,9 @@
 | GET | /api/v1/jobs | 最近任务，limit默认20，最多100 |
 | GET | /api/v1/jobs/{job_id} | 任务状态、实际记录计数与失败原因 |
 | GET | /api/v1/stream/events | SSE任务通知，支持after和Last-Event-ID续传 |
+| GET | /api/v1/forecasts/catalog | 指定数据批次的训练状态、模型目录与回测概况 |
+| GET | /api/v1/forecasts | 指定商品规格的预测、历史均价、三模型误差和真实回测明细 |
+| GET | /api/v1/forecasts/export.csv | 带模型计算值标记的未来四周预测CSV |
 | GET | /docs | 交互式接口文档 |
 | GET | /openapi.json | 当前真实实现的OpenAPI描述 |
 
@@ -73,7 +76,6 @@ prices返回 `total`、`page`、`page_size` 和 `items`，保留 `price_raw`、`
 | 方法 | 地址 | 主要参数或返回 |
 |---|---|---|
 | GET | /api/v1/alerts | 异常变化与缺失状态，保留原始记录 |
-| GET | /api/v1/forecasts | 商品、预测截止期、预测期、模型版本及回测指标 |
 
 未来分析接口固定按报价日期筛选。回放使用隔离数据空间，不能显示为当前实时报价。历史回放预测只能使用该历史截止期已可见的数据。
 
@@ -90,3 +92,15 @@ counts分别为new、existing_duplicate、file_duplicate、conflict、invalid，
 SSE事件为job.updated和snapshot.published，id是持久化递增序号，断线重连从Last-Event-ID之后继续；空闲15秒发送心跳。它通知处理进度，不代表官网每秒发布价格。业务日期保留源日期，处理时间另存UTC，界面以北京时间显示。
 
 新增报价先写独立不可变快照，Spark重算所有历史汇总及质量表，独立核对后以父批次比较的方式切换current.json。旧批次保留。多文件快照meta.source_kind=manifest、source_files_count表示来源文件数；source_file_sha256在此时对应source-manifest.json清单的哈希，各条报价仍保留实际来源文件哈希和记录号。图表收到新批次通知后由用户点击加载，原视图持续固定旧run_id。
+
+## 周度预测
+
+三个预测接口均接受可选run_id固定数据批次。detail和export需要product_id，可传model_run_id防止模型版本变化；当前模型ID不一致返回409，未知商品404，批次没有匹配模型时detail返回503，catalog返回200、status=not_ready和训练服务状态。模型文件损坏返回503并由服务重训，不能回退为无标记的过期预测。
+
+catalog的report包含训练截止期、12个验证截止期、12个测试截止期、25次拟合的时间审计、LightGBM版本、MLflow run ID、模型选择分布和当前37个规格的宏平均测试MAPE。每个商品status为ready或excluded，后者forecasts为空并附profile排除原因，不生成填补价格。
+
+detail.forecasts按未来1—4周返回target_date、horizon、predicted、lower、upper与reference_samples；价格和参考带端点为四位小数字符串。lower/upper是验证期80%绝对误差分位产生的参考带，不保证未来覆盖率。evaluation返回三种方法的MAE、RMSE、MAPE、WAPE和次数，另附选用方法分跨度指标及逐次预测/实际值；比例指标用0到1的比率表示。history仅包含源表实际出现的均价。
+
+CSV采用UTF-8 BOM，并固定data_kind=model_prediction_not_observed_quote，包含数据与模型批次、训练截止期、原规格、单位和目标日期。历史报价导出和预测导出使用不同接口。
+
+持续预测服务每15秒检查数据与训练指纹变化；先对新批次完成全部回测与拟合，再写不可变模型目录及原子指针。新批次等待期间不借用旧批次模型。已有相同训练版本的旧数据批次模型仍可固定读取。接口只读预测JSON与哈希清单，不在HTTP请求中加载可执行模型或触发同步训练。

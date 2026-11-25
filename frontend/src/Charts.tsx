@@ -5,6 +5,7 @@ import { GridComponent, TooltipComponent, LegendComponent, DataZoomComponent, Ar
 import { SVGRenderer } from 'echarts/renderers';
 import { money } from './api';
 import type { Comparison, TrendPoint } from './types';
+import type { ForecastDetail } from './forecastTypes';
 
 use([LineChart, BarChart, GridComponent, TooltipComponent, LegendComponent, DataZoomComponent, AriaComponent, SVGRenderer]);
 type Option = ComposeOption<LineSeriesOption | BarSeriesOption | GridComponentOption | TooltipComponentOption | LegendComponentOption | DataZoomComponentOption | AriaComponentOption>;
@@ -60,4 +61,30 @@ export function MarketChart({ comparison }: { comparison: Comparison }) {
     series: [{ type: 'bar', name: '市场报价', barMaxWidth: 12, data: comparison.items.map(item => ({ value: item.price == null ? null : Number(item.price), itemStyle: { color: item.rank === 1 ? '#087f5b' : '#87b4a3', borderRadius: [0, 3, 3, 0] } })), label: { show: true, position: 'right', color: '#42594e', fontSize: 12, formatter: params => params.value == null ? '' : money(String(params.value)) } }],
   }), [comparison]);
   return <Chart option={option} label="各市场报价比较，具体价格和缺失状态见下方市场数据表" height={Math.max(240, comparison.items.length * 25 + 34)} />;
+}
+
+export function ForecastChart({ result }: { result: ForecastDetail }) {
+  const option = useMemo<Option>(() => {
+    const dates = [...result.history.map(p => p.quote_date), ...result.forecasts.map(p => p.target_date)];
+    const n = result.history.length;
+    const pad = Array<null>(n).fill(null);
+    const actual = [...result.history.map(p => p.mean_price == null ? null : Number(p.mean_price)), ...Array<null>(result.forecasts.length).fill(null)];
+    const future = [...Array<null>(Math.max(0, n-1)).fill(null), actual[n-1], ...result.forecasts.map(p => Number(p.predicted))];
+    return {
+      animationDuration: 250, color: ['#087f5b', '#c17e32'], textStyle: { fontFamily: 'inherit' },
+      aria: { enabled: true, label: { description: '历史周度市场均价与未来四周模型预测。预测不是实际报价，数值和误差见下方数据表。' } },
+      grid: { left: 58, right: 24, top: 52, bottom: 46 },
+      legend: { top: 8, data: ['真实历史均价', '模型预测'], textStyle: { fontSize: 14, color: '#5f706a' } },
+      tooltip: { trigger: 'axis', renderMode: 'richText', valueFormatter: value => value == null ? '无数据' : `${money(String(value))} ${result.product.unit}` },
+      xAxis: { type: 'category', data: dates, boundaryGap: false, axisLabel: { fontSize: 12, hideOverlap: true, formatter: (day: string) => day.slice(5).replace('-', '/') }, axisTick: { show: false } },
+      yAxis: { type: 'value', scale: true, splitLine: { lineStyle: { color: '#edf1ee', type: 'dashed' } } },
+      series: [
+        { type: 'line', name: '真实历史均价', data: actual, symbol: 'circle', symbolSize: 5, connectNulls: false, lineStyle: { width: 2.5 } },
+        { type: 'line', name: '模型预测', data: future, symbolSize: 7, connectNulls: false, lineStyle: { width: 2.5, type: 'dashed' } },
+        { type: 'line', name: '参考带下限', data: [...pad, ...result.forecasts.map(p => p.lower == null ? null : Number(p.lower))], stack: 'reference', symbol: 'none', lineStyle: { opacity: 0 }, areaStyle: { opacity: 0 }, tooltip: { show: false } },
+        { type: 'line', name: '历史误差参考带宽度', data: [...pad, ...result.forecasts.map(p => p.upper == null || p.lower == null ? null : Number(p.upper)-Number(p.lower))], stack: 'reference', symbol: 'none', lineStyle: { opacity: 0 }, areaStyle: { color: '#d9ac6a', opacity: .18 }, tooltip: { show: false } },
+      ],
+    };
+  }, [result]);
+  return <Chart option={option} label="真实历史均价与未来四周模型预测" height={360} />;
 }
