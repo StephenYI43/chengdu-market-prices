@@ -1,5 +1,7 @@
 param([ValidateSet('check','stop')][string]$Action='check')
 $ErrorActionPreference='Stop'
+$OutputEncoding=New-Object Text.UTF8Encoding($false)
+[Console]::OutputEncoding=$OutputEncoding
 Push-Location -LiteralPath $PSScriptRoot
 try {
     if(-not (Test-Path -LiteralPath '.bundle-session.json')) {throw '请先运行start.cmd。'}

@@ -5,6 +5,8 @@ param(
     [switch]$ReloadImages
 )
 $ErrorActionPreference='Stop'
+$OutputEncoding=New-Object Text.UTF8Encoding($false)
+[Console]::OutputEncoding=$OutputEncoding
 $root=$PSScriptRoot
 $previousPort=$env:MARKET_HTTP_PORT
 Push-Location -LiteralPath $root

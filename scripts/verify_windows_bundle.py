@@ -83,6 +83,7 @@ def main():
             "{{.ID}}",
         ],
         text=True,
+        encoding="utf-8",
     ).strip()
     if existing or args.project == "chengdu-market-prices":
         raise ValueError("Use an unused test project name; existing containers are not modified")
@@ -173,14 +174,18 @@ def main():
         internal_only = True
         for role in ["stream", "forecast", "kafka"]:
             container_id = subprocess.check_output(
-                [*compose, "ps", "-q", role], cwd=folder, env=env, text=True
+                [*compose, "ps", "-q", role], cwd=folder, env=env, text=True, encoding="utf-8"
             ).strip()
             container = json.loads(
-                subprocess.check_output(["docker", "inspect", container_id], text=True)
+                subprocess.check_output(
+                    ["docker", "inspect", container_id], text=True, encoding="utf-8"
+                )
             )[0]
             for network in container["NetworkSettings"]["Networks"]:
                 network_data = json.loads(
-                    subprocess.check_output(["docker", "network", "inspect", network], text=True)
+                    subprocess.check_output(
+                        ["docker", "network", "inspect", network], text=True, encoding="utf-8"
+                    )
                 )[0]
                 internal_only &= network_data["Internal"] is True
         checks["compute_and_kafka_networks_have_no_external_egress"] = internal_only
