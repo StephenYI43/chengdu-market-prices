@@ -24,7 +24,8 @@ try {
     $existing=@(& docker ps -a --filter "label=com.docker.compose.project=$ProjectName" --format '{{.ID}}')
     foreach($containerId in $existing) {
         if(-not $containerId) {continue}
-        $oldRoot=& docker inspect $containerId --format '{{index .Config.Labels "com.docker.compose.project.working_dir"}}'
+        $inspection=(& docker inspect $containerId | ConvertFrom-Json)[0]
+        $oldRoot=$inspection.Config.Labels.'com.docker.compose.project.working_dir'
         if([IO.Path]::GetFullPath($oldRoot).TrimEnd([char]92,[char]47) -ne [IO.Path]::GetFullPath($root).TrimEnd([char]92,[char]47)) {
             throw "项目名$ProjectName已由另一个目录使用。请先停止旧副本，或用-ProjectName指定不同名称。"
         }
