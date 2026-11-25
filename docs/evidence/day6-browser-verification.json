@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-25",
+  "url": "http://127.0.0.1:18880/#alerts",
+  "latest_events": 3,
+  "latest_open_after_restoration": 3,
+  "history_events": 896,
+  "history_distinct_source_records": 889,
+  "history_second_page_displayed": true,
+  "missing_quote_filtered_events": 162,
+  "downloaded_csv_rows": 162,
+  "downloaded_raw_missing_markers_preserved": true,
+  "review_note_saved": true,
+  "review_history_displayed": true,
+  "review_undone_and_note_cleared": true,
+  "real_price_evidence": "Eggplant 3.00 to 4.00, +33.33%, same market, previous week 2026-11-17",
+  "runtime_services_available": ["Kafka", "Structured Streaming", "Forecast worker", "Current model"],
+  "runtime_real_source_rows": 75726,
+  "runtime_real_periods": 105,
+  "next_reference_week": "2026-12-01",
+  "responsive": [
+    {"page": "alerts", "viewport_width": 1280, "document_width": 1265},
+    {"page": "alerts", "viewport_width": 390, "document_width": 375},
+    {"page": "system", "viewport_width": 390, "document_width": 375}
+  ],
+  "mobile_dialog_fits_viewport": true,
+  "viewport_reset": true,
+  "console_errors": [],
+  "passed": true
+}

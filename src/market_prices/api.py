@@ -9,21 +9,25 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+from market_prices.alert_api import router as alert_router
 from market_prices.contracts import QuoteEvent, Readiness
 from market_prices.forecast_api import router as forecast_router
 from market_prices.import_api import router as import_router
 from market_prices.query_api import router
+from market_prices.system_api import router as system_router
 from market_prices.warehouse import DataError
 
 app = FastAPI(
     title="成都农贸市场价格平台",
-    version="0.5.0",
-    description="真实周度报价查询、文件增量导入、持续流处理，以及独立时段回测和周度价格预测。",
+    version="0.6.0",
+    description="真实价格分析、文件增量导入、持续处理、周度预测，以及可追溯的预警与复核。",
 )
 
 app.include_router(router)
 app.include_router(import_router)
 app.include_router(forecast_router)
+app.include_router(alert_router)
+app.include_router(system_router)
 
 
 @app.exception_handler(DataError)

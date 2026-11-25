@@ -1,0 +1,17 @@
+{
+  "source_meta": {
+    "run_id": "20261124-day2-verified",
+    "data_mode": "historical_snapshot",
+    "verified": true,
+    "date_start": "2024-11-26",
+    "as_of": "2026-11-24",
+    "source_file_sha256": "27fecbd0113f3491ad4b27aef8e533837801bc99c1edfff3fcaa513658e718c6",
+    "source_filename": "成都农贸市场价格_近两年_长表.csv",
+    "source_url": "https://cddrc.chengdu.gov.cn/cdsfzggw/scjg/pricelist.shtml",
+    "source_kind": "single_file",
+    "source_files_count": 1
+  },
+  "rows": 1476,
+  "sample_sha256": "984dc06c148cbd817aa2ace8636bfb3622f79e65c8251a74bc86a618e9ec6039",
+  "description": "Unchanged real latest two source weeks, with original provenance"
+}

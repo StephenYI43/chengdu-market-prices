@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 
 const paths: Record<string, string> = {
+  alert: 'M12 3 2 21h20L12 3ZM12 9v5m0 3h.01',
   upload: 'M12 16V4m-4 4 4-4 4 4M4 15v6h16v-6',
   leaf: 'M20 4c-9-1-15 3-15 9a6 6 0 0 0 6 6c6 0 10-6 9-15ZM4 21l11-11M5 13h7v6',
   grid: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z',

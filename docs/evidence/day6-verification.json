@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "run_id": "20261124-day2-verified",
+  "latest_source_week": "2026-11-24",
+  "history_events": 896,
+  "latest_week_events": 3,
+  "rule_counts": {
+    "large_weekly_change": 709,
+    "source_no_quote": 162,
+    "low_vs_peer_median": 20,
+    "low_market_coverage": 5
+  },
+  "checks": {
+    "all_rule_hits_match_independent_decimal_and_market_panel_oracle": true,
+    "pagination_has_no_duplicate_event_ids": true,
+    "source_record_numbers_and_raw_prices_preserved": true,
+    "null_prices_not_relabelled_as_zero": true,
+    "unpaginated_export_matches_all_filtered_events": true,
+    "latest_week_defaults_to_actual_source_date": true,
+    "district_filter_does_not_include_city_coverage_events": true,
+    "invalid_filters_rejected": true,
+    "same_review_submission_is_idempotent": true,
+    "stale_note_edit_returns_conflict": true,
+    "review_survives_actual_api_restart": true,
+    "review_history_retains_source_evidence": true,
+    "review_state_restored_after_acceptance": true,
+    "runtime_status_reports_real_services_and_matching_model": true,
+    "cadence_uses_business_date_without_claiming_new_publication": true,
+    "original_warehouse_and_pointer_unchanged": true,
+    "real_reimport_snapshot_keeps_same_finding_ids_despite_new_source_records": true
+  },
+  "note": "Review restored; actual acceptance actions retained in separate history."
+}

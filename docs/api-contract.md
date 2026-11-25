@@ -1,4 +1,4 @@
-# 价格查询、文件导入与流处理接口契约
+# 价格分析、导入、预测与预警接口契约
 
 ## 当前已实现
 
@@ -24,6 +24,11 @@
 | GET | /api/v1/forecasts/catalog | 指定数据批次的训练状态、模型目录与回测概况 |
 | GET | /api/v1/forecasts | 指定商品规格的预测、历史均价、三模型误差和真实回测明细 |
 | GET | /api/v1/forecasts/export.csv | 带模型计算值标记的未来四周预测CSV |
+| GET | /api/v1/alerts | 指定数据批次的规则命中、筛选、统计与分页 |
+| GET | /api/v1/alerts/export.csv | 当前筛选下的全部事件与复核状态，UTF-8 BOM |
+| GET | /api/v1/alerts/{event_id} | 指定报价期的触发依据、原始来源及最近50次复核操作 |
+| PATCH | /api/v1/alerts/{event_id}/review | 带版本校验的复核、备注及撤销 |
+| GET | /api/v1/system/status | 实际服务状态、当前模型、业务日期和最近导入任务 |
 | GET | /docs | 交互式接口文档 |
 | GET | /openapi.json | 当前真实实现的OpenAPI描述 |
 
@@ -71,13 +76,7 @@ prices返回 `total`、`page`、`page_size` 和 `items`，保留 `price_raw`、`
 - 422：参数类型、分页、排序、日期区间或区市场组合不合法。
 - 503：已验收仓库不可用；页面展示具体提示和重新读取入口，不返回伪造价格。
 
-## 后续接口草案 尚未实现
-
-| 方法 | 地址 | 主要参数或返回 |
-|---|---|---|
-| GET | /api/v1/alerts | 异常变化与缺失状态，保留原始记录 |
-
-未来分析接口固定按报价日期筛选。回放使用隔离数据空间，不能显示为当前实时报价。历史回放预测只能使用该历史截止期已可见的数据。
+分析接口按报价日期筛选。回放使用隔离数据空间，不能显示为当前实时报价。历史回放预测只能使用该历史截止期已可见的数据。
 
 ## 文件导入规则
 
@@ -104,3 +103,17 @@ detail.forecasts按未来1—4周返回target_date、horizon、predicted、lower
 CSV采用UTF-8 BOM，并固定data_kind=model_prediction_not_observed_quote，包含数据与模型批次、训练截止期、原规格、单位和目标日期。历史报价导出和预测导出使用不同接口。
 
 持续预测服务每15秒检查数据与训练指纹变化；先对新批次完成全部回测与拟合，再写不可变模型目录及原子指针。新批次等待期间不借用旧批次模型。已有相同训练版本的旧数据批次模型仍可固定读取。接口只读预测JSON与哈希清单，不在HTTP请求中加载可执行模型或触发同步训练。
+
+## 预警与复核
+
+alerts及export接受run_id、date_from/date_to、product_id、district、market_id、rule和status。默认两日期均为该批次最新报价日；只传结束日期时查看该期，只传开始日期则截止批次最新期。status可为open或reviewed，rule枚举见rules.names。分页默认20条，最多100；固定按日期降序、规则、商品与市场及事件ID稳定排序。
+
+summary统计日期、商品、区/市场和规则筛选后的matched_events、open_events、reviewed_events、affected_quotes和rule_counts；status仅进一步筛选列表及total。一个来源记录可以命中多个规则，affected_quotes按来源记录ID去重；市级覆盖事件无单条来源记录。区或市场筛选不包含市级覆盖事件。CSV导出不受分页限制，用户备注的公式前缀在导出时转为安全文本，源“-”符号保持不变。
+
+规则为large_weekly_change、high_vs_peer_median、low_vs_peer_median、source_no_quote、market_not_observed、low_market_coverage。阈值复用config/curation-policy.json。前三项从只读原始报价独立计算，同市场周变动仅配对相隔7天的同规格；缺口仅对当期实际出现的规格计算。整个规格当期停报不扩造市场缺记录。
+
+event_id为64位十六进制摘要，包含规则版本/策略哈希、商品、日期、市场和触发依据，不含批次或来源文件位置。同值数据重新导入时可继续使用同一复核记录；价格依据或规则变化会生成新ID。detail需要quote_date和可选run_id，返回明确的价格、前期值、中位数或覆盖计数与来源记录号、原始规格和文件哈希。
+
+PATCH请求包括run_id、quote_date、policy_sha256、reviewed、note（最多500字）和expected_version。首次版本为0；变更成功加1。完全相同的重复请求返回既有记录，状态/备注已被其他操作更新时返回409；规则版本变化同样返回409。操作日志追加保存事件依据及实际批次，review状态独立存于runtime/alerts/reviews.sqlite，不能修改仓库价格。复核不等同于更正或消除规则命中。
+
+system/status始终尽量返回诊断结果，即使仓库不可读也返回200及issues。checked_at使用北京时间，源报价age_days及next_expected_week仅按实际报价日期和7天间隔计算，不代表官网发布状态。当前模型只有与当前仓库匹配时才列出；最近任务计数限于最近20条实际导入任务，不作为全站成功率。
