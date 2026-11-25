@@ -28,11 +28,17 @@ try {
         }
     }
     Write-Host '正在校验运行包，首次校验大镜像文件需要一点时间。'
+    function Get-BundleSha256([string]$Path) {
+        $stream=[IO.File]::OpenRead($Path)
+        $sha=[Security.Cryptography.SHA256]::Create()
+        try {return [BitConverter]::ToString($sha.ComputeHash($stream)).Replace('-','').ToLowerInvariant()}
+        finally {$stream.Dispose();$sha.Dispose()}
+    }
     $manifest=Get-Content -LiteralPath 'bundle.json' -Raw -Encoding UTF8 | ConvertFrom-Json
     foreach($file in $manifest.files) {
         $path=Join-Path $root $file.path
         if(-not (Test-Path -LiteralPath $path)) {throw "运行包缺少文件：$($file.path)，请完整解压。"}
-        if((Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant() -ne $file.sha256) {
+        if((Get-BundleSha256 $path) -ne $file.sha256) {
             throw "文件校验失败：$($file.path)，请重新接收或解压运行包。"
         }
     }
