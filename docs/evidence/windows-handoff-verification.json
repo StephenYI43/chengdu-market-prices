@@ -1,0 +1,54 @@
+{
+  "passed": true,
+  "checked_at": "2026-11-25T16:04:21.476491+00:00",
+  "archive_sha256": "cd840958d0a8b085f3cb4a24d9548d54ab24cb5e3cd54f22ff2507e9e0ef9a82",
+  "project": "chengdu-handoff-acceptance-v5",
+  "port": 18885,
+  "test_directory": "D:\\bigdata\\artifacts\\handoff-acceptance\\最终 同学电脑\\chengdu-market-windows-20261125",
+  "checks": {
+    "fresh_directory_has_no_host_venv_or_frontend_build": true,
+    "archive_import_and_first_start_succeeded": true,
+    "four_services_online_on_isolated_port": true,
+    "all_real_data_and_matching_model_are_present": true,
+    "embedded_compiled_frontend_and_assets_are_served": true,
+    "pretrained_37_ready_and_7_excluded_specifications": true,
+    "four_future_weeks_and_real_backtests_are_available": true,
+    "latest_3_and_historical_896_alerts_are_available": true,
+    "actual_real_file_upload_is_idempotent": true,
+    "compute_and_kafka_networks_have_no_external_egress": true,
+    "738_real_quotes_pass_offline_kafka_spark_and_duckdb_reconciliation": true,
+    "repeat_start_stop_restart_keeps_existing_data": true,
+    "production_pointer_and_database_unchanged": true
+  },
+  "stream_smoke": {
+    "passed": true,
+    "run_id": "handoff-20261125160321",
+    "spark_version": "4.3.0",
+    "topic": "price.day1.handoff-20261125160321",
+    "quote_date": "2026-11-24",
+    "actual": {
+      "rows": 738,
+      "quoted": 737,
+      "business_keys": 738,
+      "price_sum_control_only": "6593.7000",
+      "markets": 18,
+      "districts": 6,
+      "missing": 1
+    },
+    "checks": {
+      "rows": true,
+      "quoted": true,
+      "missing": true,
+      "business_keys": true,
+      "all_event_ids_match": true,
+      "all_payload_fields_match": true,
+      "price_control_sum_match": true,
+      "original_quote_date_preserved": true,
+      "replay_label_preserved": true,
+      "missing_and_price_semantics_match": true,
+      "duckdb_parquet_counts_match": true
+    },
+    "control_sum_note": "仅用于核对传输完整性，不同单位价格之和不作业务指标"
+  },
+  "scope": "Windows PowerShell 5.1, actual image load, fresh runtime and Kafka volume, compute/Kafka use an internal-only backend; API also has a local web bridge; same host Docker daemon."
+}
