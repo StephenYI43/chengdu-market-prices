@@ -9,6 +9,7 @@ node_modules/
 dist/
 runtime/
 artifacts/
+交付材料/
 data/raw/
 *.log
 .DS_Store

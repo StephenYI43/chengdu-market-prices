@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "checked_at": "2026-11-25T12:56:30.174325+00:00",
+  "dataset_run_id": "20261124-day2-verified",
+  "model_run_id": "forecast-e2109f7ea70c4cfaaf15afbee2421741",
+  "checks": {
+    "api_live_and_ready": true,
+    "four_actual_service_checks_are_ready": true,
+    "source_business_counts_match_report": true,
+    "model_matches_pinned_dataset_and_cutoff": true,
+    "latest_and_history_alert_counts_match_verified_evidence": true,
+    "built_frontend_assets_are_served": true,
+    "openapi_exposes_all_core_flows": true,
+    "report_has_supplied_students_and_teacher": true,
+    "report_has_five_required_sections": true,
+    "report_metadata_has_current_group": true,
+    "report_has_no_old_roster_or_unfilled_slots": true,
+    "report_keeps_single_a4_portrait_section": true,
+    "warehouse_pointer_and_database_unchanged": true
+  },
+  "report": {
+    "filename": "基于成都农贸市场价格数据的大数据分析与可视化平台_课程作业报告.docx",
+    "sha256": "e86175f3c8a2d58563582c4fae742e69eaec60358b39c5799cfa6d723756a6a7",
+    "text_characters": 17704,
+    "tables": 19,
+    "drawings": 15
+  },
+  "note": "Read-only final checks; recovery/review mutation evidence is retained from earlier isolated verification."
+}

@@ -1,0 +1,41 @@
+{
+  "passed": true,
+  "report": {
+    "filename": "基于成都农贸市场价格数据的大数据分析与可视化平台_课程作业报告.docx",
+    "sha256": "e86175f3c8a2d58563582c4fae742e69eaec60358b39c5799cfa6d723756a6a7",
+    "pages": 31,
+    "tables": 19,
+    "figures": 15
+  },
+  "members": [
+    "宋珺熠 2024110131",
+    "何小柯 2023070712",
+    "文治民 2021120343"
+  ],
+  "teacher": "卢宇",
+  "date": "2026年11月",
+  "checks": {
+    "all_31_rendered_pages_visually_reviewed": true,
+    "final_minor_edits_rechecked_with_unchanged_other_page_images": true,
+    "no_one_line_continuation_pages": true,
+    "a4_geometry_and_reference_structure_retained": true,
+    "actual_ui_images_distinguished_from_explanatory_diagrams": true,
+    "copied_source_author_metadata_replaced": true,
+    "original_reference_sha256_unchanged": true,
+    "original_long_csv_sha256_matches_verified_source": true
+  },
+  "authoring": "WPS KWPS.Application, then core metadata-only package patch",
+  "rendering": "WPS ExportAsFixedFormat plus bundled pypdfium2",
+  "packaged_renderer_unavailable_reason": "LibreOffice soffice.exe is absent; WPS PDF and bundled pypdfium2 used for equivalent visual verification",
+  "qa_directory": "artifacts/day7/report-work/qa-final",
+  "regression": {
+    "regular_tests_passed": 73,
+    "regular_tests_skipped": 1,
+    "skipped_test_reason": "Real ML dependency absent in ordinary environment; previously verified in dedicated ML environment",
+    "history_independent_checks_passed": 20,
+    "forecast_independent_checks_passed": 17,
+    "ruff": "passed",
+    "frontend_typecheck_and_build": "passed",
+    "frontend_build_note": "Existing ECharts lazy chunk is 585KB; build succeeded"
+  }
+}
