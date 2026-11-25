@@ -88,7 +88,13 @@ def main():
         checks["report_has_supplied_students_and_teacher"] = all(
             value in text
             for value in [
-                "宋珺熠", "2024110131", "何小柯", "2023070712", "文治民", "2021120343", "卢宇"
+                "宋珺熠",
+                "2024110131",
+                "何小柯",
+                "2023070712",
+                "文治民",
+                "2021120343",
+                "卢宇",
             ]
         )
         checks["report_has_five_required_sections"] = all(
@@ -101,7 +107,14 @@ def main():
         checks["report_has_no_old_roster_or_unfilled_slots"] = not any(
             value in "".join(all_xml)
             for value in [
-                "谌泽轩", "熊浩然", "桂林秀", "杨显达", "刘镇涛", "待填写", "FIGSLOT", "TBLSLOT"
+                "谌泽轩",
+                "熊浩然",
+                "桂林秀",
+                "杨显达",
+                "刘镇涛",
+                "待填写",
+                "FIGSLOT",
+                "TBLSLOT",
             ]
         )
         section = document.findall(".//w:sectPr", NS)
