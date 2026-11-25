@@ -56,6 +56,52 @@ services:
       timeout: 5s
       retries: 12
       start_period: 5s
+  stream:
+    image: chengdu-market-prices-app:day1
+    entrypoint: []
+    command: ["/opt/spark/bin/spark-submit", "--master", "local[2]", "--driver-memory", "2g", "--conf", "spark.jars.ivy=/opt/spark/ivy", "--packages", "org.apache.spark:spark-sql-kafka-0-10_2.13:4.3.0", "scripts/stream_worker.py"]
+    environment:
+      PYTHONPATH: /app/src
+      PYSPARK_PYTHON: /app/.venv/bin/python
+      PYSPARK_DRIVER_PYTHON: /app/.venv/bin/python
+      SPARK_LOCAL_IP: 127.0.0.1
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      MARKET_RUNTIME_DIR: /app/runtime
+      MARKET_IMPORT_TOPIC: price.imports.v1
+    volumes:
+      - ./runtime:/app/runtime
+      - ./artifacts:/app/artifacts
+      - spark-ivy:/opt/spark/ivy
+    depends_on:
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+    mem_limit: 5g
+    healthcheck:
+      test: ["CMD", "/app/.venv/bin/python", "-c", "from market_prices.job_store import JobStore; raise SystemExit(0 if JobStore().worker_status()['online'] else 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 40s
+  api-acceptance:
+    extends:
+      service: api
+    profiles: ["acceptance"]
+    ports: !override
+      - "127.0.0.1:18882:8000"
+    volumes: !override
+      - ./runtime/day4-acceptance:/app/runtime
+      - ./artifacts/day4-acceptance:/app/artifacts
+  stream-acceptance:
+    extends:
+      service: stream
+    profiles: ["acceptance"]
+    environment:
+      MARKET_IMPORT_TOPIC: price.imports.acceptance.v1
+    volumes: !override
+      - ./runtime/day4-acceptance:/app/runtime
+      - ./artifacts/day4-acceptance:/app/artifacts
+      - spark-ivy:/opt/spark/ivy
   worker:
     image: chengdu-market-prices-app:day1
     profiles: ["tools"]

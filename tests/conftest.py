@@ -13,7 +13,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from market_prices.api import app
-from market_prices.contracts import stable_id
+from market_prices.contracts import normalized_spec, stable_id
 from market_prices.curation import SOURCE_URL, entity_id, read_aliases, write_json
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -54,6 +54,16 @@ def query_template(tmp_path_factory):
                     "source_row_number": number,
                     "source_filename": source.name,
                     "source_record_id": stable_id([sha, str(number)]),
+                    "business_key": stable_id(
+                        [
+                            row["日期"],
+                            row["商品名称"],
+                            normalized_spec(row["产品规格"]),
+                            row["计量单位"],
+                            row["区"],
+                            row["市场"],
+                        ]
+                    ),
                 }
             )
     with duckdb.connect(str(folder / "warehouse.duckdb")) as db:

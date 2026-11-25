@@ -16,6 +16,8 @@ class DatasetMeta(BaseModel):
     source_file_sha256: str
     source_filename: str
     source_url: str
+    source_kind: Literal["single_file", "manifest"] = "single_file"
+    source_files_count: int = 1
 
 
 class Totals(BaseModel):

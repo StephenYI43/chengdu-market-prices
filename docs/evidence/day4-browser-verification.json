@@ -1,0 +1,35 @@
+{
+  "date": "2026-11-25",
+  "application": "http://127.0.0.1:18880/#data-management",
+  "method": "Visible browser controls, file chooser, rendered DOM and screenshots",
+  "file_upload": {
+    "source": "data/samples/latest_week.csv",
+    "unchanged_real_rows": 738,
+    "new_rows": 0,
+    "existing_duplicates": 738,
+    "invalid_rows": 0,
+    "conflicts": 0,
+    "confirmed_job_state": "no_op",
+    "skipped_rows": 738,
+    "confirmation_disabled_after_success": true
+  },
+  "responsive": [
+    {"viewport_width": 1280, "document_width": 1265, "no_page_horizontal_overflow": true},
+    {"viewport_width": 390, "document_width": 375, "no_page_horizontal_overflow": true}
+  ],
+  "snapshot_notification": {
+    "isolated_acceptance_api": "http://127.0.0.1:18882/",
+    "pinned_rows_before_publication": 74987,
+    "pinned_rows_after_notice_before_click": 74987,
+    "rows_after_click_load_new_data": 75726,
+    "periods_before": 104,
+    "periods_after": 105,
+    "as_of_before": "2026-11-17",
+    "as_of_after": "2026-11-24",
+    "captured_console_errors": []
+  },
+  "temporary_viewport_override_reset": true,
+  "acceptance_tab_closed": true,
+  "production_data_management_tab_kept": true,
+  "passed": true
+}

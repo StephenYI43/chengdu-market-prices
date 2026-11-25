@@ -10,6 +10,8 @@ dependencies = [
   "confluent-kafka==2.16.2",
   "duckdb==2.0.1",
   "pyarrow>=18,<30",
+  "python-multipart==0.0.34",
+  "openpyxl==3.1.5",
 ]
 
 [dependency-groups]

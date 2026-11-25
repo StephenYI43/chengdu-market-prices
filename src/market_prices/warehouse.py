@@ -39,6 +39,8 @@ class Snapshot:
             source_file_sha256=report["source_file_sha256"],
             source_filename=stage["source_filename"],
             source_url=stage["source_url"],
+            source_kind=stage.get("source_kind", "single_file"),
+            source_files_count=stage.get("source_files_count", 1),
         )
 
     def rows(self, sql: str, params=None):

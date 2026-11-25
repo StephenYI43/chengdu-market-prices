@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "成都农贸市场价格平台",
-    "description": "真实周度历史价格查询、趋势和市场比较。实时任务与预测模型待后续实现。",
-    "version": "0.3.0"
+    "description": "真实周度报价查询、文件预览与增量导入、持续流处理及任务通知。预测模型待后续实现。",
+    "version": "0.4.0"
   },
   "paths": {
     "/api/v1/overview": {
@@ -854,6 +854,246 @@
         }
       }
     },
+    "/api/v1/imports/preview": {
+      "post": {
+        "tags": [
+          "数据管理与流处理"
+        ],
+        "summary": "Preview Upload",
+        "operationId": "preview_upload_api_v1_imports_preview_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_preview_upload_api_v1_imports_preview_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/imports": {
+      "post": {
+        "tags": [
+          "数据管理与流处理"
+        ],
+        "summary": "Confirm Import",
+        "operationId": "confirm_import_api_v1_imports_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmImport"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/imports/service": {
+      "get": {
+        "tags": [
+          "数据管理与流处理"
+        ],
+        "summary": "Import Service Status",
+        "operationId": "import_service_status_api_v1_imports_service_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/jobs": {
+      "get": {
+        "tags": [
+          "数据管理与流处理"
+        ],
+        "summary": "List Jobs",
+        "operationId": "list_jobs_api_v1_jobs_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/jobs/{job_id}": {
+      "get": {
+        "tags": [
+          "数据管理与流处理"
+        ],
+        "summary": "Get Job",
+        "operationId": "get_job_api_v1_jobs__job_id__get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{32}$",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/stream/events": {
+      "get": {
+        "tags": [
+          "数据管理与流处理"
+        ],
+        "summary": "Stream Events",
+        "operationId": "stream_events_api_v1_stream_events_get",
+        "parameters": [
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 9000000000000000,
+              "minimum": 0,
+              "default": 0,
+              "title": "After"
+            }
+          },
+          {
+            "name": "last-event-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Last-Event-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health/live": {
       "get": {
         "summary": "Live",
@@ -956,6 +1196,38 @@
   },
   "components": {
     "schemas": {
+      "Body_preview_upload_api_v1_imports_preview_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
+          },
+          "source_url": {
+            "type": "string",
+            "maxLength": 2048,
+            "title": "Source Url",
+            "default": "https://cddrc.chengdu.gov.cn/cdsfzggw/scjg/pricelist.shtml"
+          },
+          "sheet_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sheet Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_preview_upload_api_v1_imports_preview_post"
+      },
       "ComparisonResponse": {
         "properties": {
           "meta": {
@@ -1012,6 +1284,20 @@
         ],
         "title": "ComparisonResponse"
       },
+      "ConfirmImport": {
+        "properties": {
+          "preview_id": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{32}$",
+            "title": "Preview Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "preview_id"
+        ],
+        "title": "ConfirmImport"
+      },
       "DatasetMeta": {
         "properties": {
           "run_id": {
@@ -1050,6 +1336,20 @@
           "source_url": {
             "type": "string",
             "title": "Source Url"
+          },
+          "source_kind": {
+            "type": "string",
+            "enum": [
+              "single_file",
+              "manifest"
+            ],
+            "title": "Source Kind",
+            "default": "single_file"
+          },
+          "source_files_count": {
+            "type": "integer",
+            "title": "Source Files Count",
+            "default": 1
           }
         },
         "type": "object",

@@ -1,15 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { endpoint, useResource } from './api';
 import { Icon } from './Icon';
 import { PricePanels } from './PricePanels';
 import { PriceRecords } from './PriceRecords';
 import { ErrorMessage, Loading, Shell } from './ui';
 import type { Catalog, Market, Overview, Product, Selection } from './types';
+import { DataManager } from './DataManager';
+import { useImportEvents } from './importData';
 
 export function App() {
   const [revision, setRevision] = useState(0);
   const overview = useResource<Overview>('/api/v1/overview', revision);
   const runId = overview.data?.meta.run_id;
+  const live = useImportEvents(runId);
+  const [view, setView] = useState(() => window.location.hash === '#data-management' ? 'imports' : 'analysis');
+  useEffect(() => { const changed = () => setView(window.location.hash === '#data-management' ? 'imports' : 'analysis'); window.addEventListener('hashchange', changed); return () => window.removeEventListener('hashchange', changed); }, []);
   const products = useResource<Catalog<Product>>(runId ? endpoint('products', { run_id: runId }) : null, revision);
   const markets = useResource<Catalog<Market>>(runId ? endpoint('markets', { run_id: runId }) : null, revision);
   const error = overview.error ?? products.error ?? markets.error;
@@ -17,7 +22,8 @@ export function App() {
   if (error) return <Shell><main id="main-content" className="initial-state"><Icon name="layers" size={36} /><h1>暂时无法读取数据</h1><ErrorMessage message={error} /><button className="button primary" onClick={refresh}><Icon name="refresh" />重新读取</button></main></Shell>;
   if (!overview.data || !products.data || !markets.data) return <Shell><main id="main-content" className="initial-state"><Loading text="正在连接已验收的价格数据" /></main></Shell>;
   if (products.data.meta.run_id !== runId || markets.data.meta.run_id !== runId) return <Shell><main id="main-content" className="initial-state"><ErrorMessage message="数据批次未对齐，请重新读取" /><button className="button primary" onClick={refresh}>重新读取</button></main></Shell>;
-  return <Shell><Dashboard key={`${runId}:${revision}`} overview={overview.data} products={products.data.items} markets={markets.data.items} refresh={refresh} /></Shell>;
+  if (view === 'imports') return <Shell><DataManager live={live} refreshAnalysis={() => { window.location.hash = '#main-content'; refresh(); }} /></Shell>;
+  return <Shell>{live.newRunId ? <div className="new-data-banner"><span>新一批数据已完成验收，当前图表仍固定在原批次。</span><button className="button primary" onClick={refresh}>加载新数据</button></div> : null}<Dashboard key={`${runId}:${revision}`} overview={overview.data} products={products.data.items} markets={markets.data.items} refresh={refresh} /></Shell>;
 }
 
 function Dashboard({ overview, products, markets, refresh }: { overview: Overview; products: Product[]; markets: Market[]; refresh: () => void }) {
@@ -68,7 +74,7 @@ function Dashboard({ overview, products, markets, refresh }: { overview: Overvie
       <div className="section-context"><div><strong>{product.product_name}</strong><span>{product.product_spec}</span><span className="scope-pill">{scope}</span></div><span>比较日期 {comparisonDate}</span></div>
       <PricePanels selection={selection} comparisonDate={comparisonDate} dates={chartDates} rangeError={rangeError} unit={product.unit} />
       <PriceRecords key={JSON.stringify(selection)} selection={selection} rangeError={rangeError} unit={product.unit} chooseMarket={(area, id) => { setDistrict(area); setMarketId(id); }} />
-      <footer className="data-notes" id="data-notes"><details><summary><Icon name="info" size={18} />关于这些价格数据</summary><p>数据来自用户采集的<a href={overview.meta.source_url} target="_blank" rel="noreferrer">成都市发改委市场价格栏目</a>文件，尚未逐期对照官网。均价是所选监测市场的有效价格等权均值，不能代表按全市消费量加权的价格指数。</p><p>“无报价”表示源记录为“-”，“无记录”表示该期未出现该商品规格。质量提示仅用于复核，原价保留。周变化以连续两期都有价格的相同市场计算。</p><div className="provenance"><span>来源文件：{overview.meta.source_filename}</span><span>数据批次：{overview.meta.run_id}</span><span>文件 SHA-256：{overview.meta.source_file_sha256}</span></div></details><span className="footer-caption">真实周度报价 · 同规格比较 · 缺失值保留</span></footer>
+      <footer className="data-notes" id="data-notes"><details><summary><Icon name="info" size={18} />关于这些价格数据</summary><p>数据来自用户采集的<a href={overview.meta.source_url} target="_blank" rel="noreferrer">成都市发改委市场价格栏目</a>文件，尚未逐期对照官网。均价是所选监测市场的有效价格等权均值，不能代表按全市消费量加权的价格指数。</p><p>“无报价”表示源记录为“-”，“无记录”表示该期未出现该商品规格。质量提示仅用于复核，原价保留。周变化以连续两期都有价格的相同市场计算。</p><div className="provenance"><span>来源文件：{overview.meta.source_filename}</span><span>数据批次：{overview.meta.run_id}</span><span>{overview.meta.source_kind === 'manifest' ? '来源清单' : '文件'} SHA-256：{overview.meta.source_file_sha256}</span></div></details><span className="footer-caption">真实周度报价 · 同规格比较 · 缺失值保留</span></footer>
     </main>
   </>;
 }

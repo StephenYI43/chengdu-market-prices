@@ -284,3 +284,71 @@ th { color: #6e8374; }
   .table-toolbar label, .table-toolbar select { font-size: 14px; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; } }
+.button:disabled { opacity: .5; cursor: default; }
+.import-dashboard { padding-top: 40px; }
+.service-badge { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #dce5de; background: #edf1ee; border-radius: 6px; padding: 11px 14px; color: #65796b; font-size: 14px; white-space: nowrap; }
+.service-badge.online { background: #e5f3ec; border-color: #cce5d7; color: #167953; }
+.new-data-banner { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 16px 22px; margin: 22px 0; border: 1px solid #b9d9c4; border-radius: 8px; background: #eaf5ee; font-size: 14px; }
+.workspace > .new-data-banner { margin: 18px 36px 0; }
+.upload-panel, .preview-panel, .jobs-panel { margin-top: 26px; }
+.upload-content { padding: 4px 24px 24px; }
+.file-drop { position: relative; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; min-height: 180px; padding: 24px; border: 1px dashed #a7c5b3; border-radius: 8px; background: #f6faf7; text-align: center; color: #3b6c50; cursor: pointer; overflow-wrap: anywhere; }
+.file-drop:hover, .file-drop:focus-within { border-color: var(--green); background: #edf6f0; }
+.file-drop:focus-within { outline: 3px solid #82c7ab; outline-offset: 3px; }
+.file-drop span { color: #6d8072; font-size: 14px; line-height: 1.7; }
+.file-drop input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.import-fields { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-top: 22px; }
+.import-fields label { display: flex; flex-direction: column; gap: 9px; font-size: 14px; color: #61796a; min-width: 0; }
+.import-fields input { border: 1px solid #dce5de; border-radius: 6px; padding: 11px 12px; background: white; width: 100%; font-size: 14px; color: #344e40; }
+.import-actions { display: flex; align-items: center; gap: 18px; margin-top: 22px; }
+.import-actions > span { font-size: 14px; color: #6d8072; line-height: 1.7; }
+.import-counts { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; padding: 8px 24px 25px; }
+.import-counts > div { border-left: 2px solid #e3ede6; padding-left: 14px; }
+.import-counts span { display: block; color: #6d8072; font-size: 14px; }
+.import-counts strong { display: block; font-size: 26px; font-weight: 600; margin-top: 9px; font-variant-numeric: tabular-nums; }
+.validation-errors { margin: 0 24px 22px; padding: 16px 20px; background: #fff3eb; color: #8a4e2b; border: 1px solid #edd6c5; border-radius: 7px; font-size: 14px; line-height: 1.8; max-height: 240px; overflow: auto; }
+.validation-errors ul { margin-bottom: 0; padding-left: 20px; }
+.preview-table { width: 100%; min-width: 800px; }
+.preview-table small { display: block; margin-top: 6px; color: #6d8072; font-size: 13px; max-width: 270px; white-space: normal; line-height: 1.6; }
+.import-class { border-radius: 4px; padding: 5px 8px; background: #edf1ee; color: #5e7567; font-size: 13px; white-space: nowrap; }
+.import-class.new { color: #087047; background: #e2f2e8; }
+.import-class.invalid, .import-class.conflict { color: #a34826; background: #fceee6; }
+.preview-footer { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 22px 24px; font-size: 14px; }
+.preview-footer p { color: #6d8072; line-height: 1.8; margin-bottom: 0; }
+.upload-provenance { padding: 0 24px 22px; color: #6d8072; font-size: 13px; overflow-wrap: anywhere; line-height: 1.8; }
+.job-list { padding: 0 24px 24px; display: grid; gap: 14px; }
+.job-card { border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+.job-card.recent { border-color: #adcdb9; background: #fbfdfb; }
+.job-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.job-heading > div { min-width: 0; }
+.job-heading strong { font-size: 15px; overflow-wrap: anywhere; }
+.job-heading > div > span { display: block; font-size: 13px; color: #6d8072; margin-top: 8px; }
+.job-card > p { font-size: 14px; color: #5d7565; line-height: 1.8; margin: 16px 0 12px; }
+.job-state { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: #5c7765; white-space: nowrap; }
+.job-state.succeeded, .job-state.no_op { color: #087f5b; }
+.job-state.failed { color: #a34826; }
+.job-state .loader { width: 15px; height: 15px; }
+.job-counts { display: flex; flex-wrap: wrap; gap: 10px 22px; font-size: 13px; color: #6d8072; line-height: 1.8; }
+.job-counts strong { color: #3a5845; font-weight: 550; font-variant-numeric: tabular-nums; margin-left: 4px; }
+.job-card progress { display: block; width: 100%; height: 6px; margin-top: 18px; accent-color: var(--green); }
+.job-result { display: flex; align-items: center; gap: 7px; font-size: 13px; color: #087f5b; margin-top: 16px; }
+.import-help { display: flex; align-items: start; gap: 10px; color: #6d8072; font-size: 14px; margin: 22px 0; line-height: 1.9; }
+.import-help svg { flex-shrink: 0; margin-top: 4px; }
+.import-help p { margin: 0; }
+@media (max-width: 1100px) { .import-counts { grid-template-columns: repeat(3, 1fr); gap: 22px; } .import-fields { grid-template-columns: 1fr; } }
+@media (max-width: 640px) {
+  .import-dashboard .page-heading { flex-direction: column; gap: 18px; }
+  .import-dashboard .page-heading p { max-width: none; font-size: 14px; }
+  .upload-panel .panel-heading { flex-direction: column; gap: 12px; }
+  .upload-content, .job-list { padding-inline: 16px; }
+  .file-drop { padding: 20px 14px; }
+  .import-actions, .preview-footer { flex-direction: column; align-items: stretch; }
+  .import-counts { grid-template-columns: repeat(2, 1fr); padding-inline: 16px; }
+  .preview-footer, .upload-provenance { padding-inline: 16px; }
+  .validation-errors { margin-inline: 16px; }
+  .job-heading { align-items: start; flex-direction: column; }
+  .job-card { padding: 16px; }
+  .new-data-banner { flex-direction: column; align-items: stretch; }
+  .workspace > .new-data-banner { margin-inline: 16px; }
+  .jobs-panel .panel-heading { flex-wrap: wrap; gap: 12px; }
+}

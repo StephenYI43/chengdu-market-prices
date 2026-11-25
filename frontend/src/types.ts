@@ -2,6 +2,7 @@ export interface DatasetMeta {
   run_id: string; data_mode: 'historical_snapshot'; verified: boolean;
   date_start: string; as_of: string; source_file_sha256: string;
   source_filename: string; source_url: string;
+  source_kind?: 'single_file' | 'manifest'; source_files_count?: number;
 }
 export interface Overview {
   meta: DatasetMeta;

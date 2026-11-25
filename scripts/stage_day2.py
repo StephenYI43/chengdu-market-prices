@@ -30,6 +30,10 @@ def main():
     parser.add_argument("--run-id", required=True)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
+    pointer = root / "runtime/warehouse/current.json"
+    expected_parent = (
+        json.loads(pointer.read_text(encoding="utf-8"))["run_id"] if pointer.exists() else None
+    )
     folder = run_folder(root / "runtime/warehouse", args.run_id)
     folder.mkdir(parents=True, exist_ok=False)
     source, wide_source = args.source_dir / SOURCE_LONG, args.source_dir / SOURCE_WIDE
@@ -109,6 +113,7 @@ def main():
     )
     info = {
         "run_id": args.run_id,
+        "expected_parent_run_id": expected_parent,
         "pipeline_version": "day2-v1",
         "started_at": datetime.now(UTC).isoformat(),
         "source_file_sha256": sha,

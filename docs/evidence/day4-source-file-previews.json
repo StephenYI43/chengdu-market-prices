@@ -1,0 +1,44 @@
+[
+  {
+    "filename": "成都农贸市场价格_近两年_长表.csv",
+    "rows": 75726,
+    "counts": {
+      "new": 0,
+      "existing_duplicate": 75726,
+      "file_duplicate": 0,
+      "conflict": 0,
+      "invalid": 0
+    },
+    "sheet": "CSV",
+    "passed": true,
+    "source_bytes_unchanged": true
+  },
+  {
+    "filename": "成都农贸市场价格_近两年_宽表.csv",
+    "rows": 75726,
+    "counts": {
+      "new": 0,
+      "existing_duplicate": 75726,
+      "file_duplicate": 0,
+      "conflict": 0,
+      "invalid": 0
+    },
+    "sheet": "CSV",
+    "passed": true,
+    "source_bytes_unchanged": true
+  },
+  {
+    "filename": "成都农贸市场价格_近两年.xlsx",
+    "rows": 75726,
+    "counts": {
+      "new": 0,
+      "existing_duplicate": 75726,
+      "file_duplicate": 0,
+      "conflict": 0,
+      "invalid": 0
+    },
+    "sheet": "长表",
+    "passed": true,
+    "source_bytes_unchanged": true
+  }
+]

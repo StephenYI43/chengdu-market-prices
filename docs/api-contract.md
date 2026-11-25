@@ -1,4 +1,4 @@
-# 历史价格查询接口契约
+# 价格查询、文件导入与流处理接口契约
 
 ## 当前已实现
 
@@ -15,6 +15,12 @@
 | GET | /api/v1/prices/export.csv | 当前筛选下全部实际明细，UTF-8 BOM CSV |
 | GET | /api/v1/trends | 指定商品规格的周趋势，可选区或市场 |
 | GET | /api/v1/comparisons | 指定日期、商品规格和范围的市场报价与并列排名 |
+| POST | /api/v1/imports/preview | multipart上传CSV/XLSX，完整校验、分类和前20条预览，不入库 |
+| POST | /api/v1/imports | JSON传preview_id，幂等确认，返回持久化任务（202） |
+| GET | /api/v1/imports/service | 持续消费者心跳、当前批次和事件游标 |
+| GET | /api/v1/jobs | 最近任务，limit默认20，最多100 |
+| GET | /api/v1/jobs/{job_id} | 任务状态、实际记录计数与失败原因 |
+| GET | /api/v1/stream/events | SSE任务通知，支持after和Last-Event-ID续传 |
 | GET | /docs | 交互式接口文档 |
 | GET | /openapi.json | 当前真实实现的OpenAPI描述 |
 
@@ -68,8 +74,19 @@ prices返回 `total`、`page`、`page_size` 和 `items`，保留 `price_raw`、`
 |---|---|---|
 | GET | /api/v1/alerts | 异常变化与缺失状态，保留原始记录 |
 | GET | /api/v1/forecasts | 商品、预测截止期、预测期、模型版本及回测指标 |
-| GET | /api/v1/stream/events | SSE处理通知，包含业务日期和处理时间 |
-| POST | /api/v1/imports | 新一期文件导入任务，返回任务ID |
-| GET | /api/v1/jobs/{job_id} | 任务状态、计数、耗时和失败原因 |
 
 未来分析接口固定按报价日期筛选。回放使用隔离数据空间，不能显示为当前实时报价。历史回放预测只能使用该历史截止期已可见的数据。
+
+## 文件导入规则
+
+preview接收file、source_url（默认原官网栏目）、可选sheet_name。限制20MB、展开后100,000条报价；Excel最多100MB解压内容。支持原始7列长表、以“区·市场”作列名的宽表和平台导出的明细CSV，编码支持UTF-8、GB18030及带BOM的UTF-16。Excel默认优先“长表”，多个候选表需指定名称，不重复读取长宽两个表。
+
+必填字段为日期、商品名称、产品规格、计量单位、区、市场、价格。报价日期按源数据周二口径校验；商品规格与市场须已登记，价格为正数或“-”。公式不执行，空白不视为无报价。
+
+counts分别为new、existing_duplicate、file_duplicate、conflict、invalid，总和等于source_rows。业务键按日期、原始商品名、仅规范标点空白的原始规格、单位、区、市场计算。相同键和价格跳过；同键不同价格或报价状态禁止覆盖。有任意冲突或无效行则整个确认被阻止；修正文件后重新预览。预览批次、配置或保存内容变化返回409。
+
+确认用preview_id作为幂等任务ID。同一预览重复确认只返回同一任务。全重复直接no_op；有新增则queued → publishing → streaming → building → verifying → succeeded。实际发送、接收、插入和跳过数量分别返回，计算阶段不伪造百分比。失败为failed并保留错误信息；消费者重启会恢复未完成任务，Kafka与本地inbox按事件ID去重。
+
+SSE事件为job.updated和snapshot.published，id是持久化递增序号，断线重连从Last-Event-ID之后继续；空闲15秒发送心跳。它通知处理进度，不代表官网每秒发布价格。业务日期保留源日期，处理时间另存UTC，界面以北京时间显示。
+
+新增报价先写独立不可变快照，Spark重算所有历史汇总及质量表，独立核对后以父批次比较的方式切换current.json。旧批次保留。多文件快照meta.source_kind=manifest、source_files_count表示来源文件数；source_file_sha256在此时对应source-manifest.json清单的哈希，各条报价仍保留实际来源文件哈希和记录号。图表收到新批次通知后由用户点击加载，原视图持续固定旧run_id。

@@ -26,6 +26,7 @@ from market_prices.curation import (
     run_folder,
     write_json,
 )
+from market_prices.job_store import publish_snapshot
 
 TABLES = {
     "raw_quotes": "ods",
@@ -54,7 +55,8 @@ def records(db, query):
 
 
 def scalar(db, query):
-    return db.execute(query).fetchone()[0]
+    # DuckDB 2 requires the DB-API result to be drained before a relation query.
+    return db.execute(query).fetchall()[0][0]
 
 
 def close(a, b, tolerance=1e-7):
@@ -518,18 +520,12 @@ def main():
             evidence / "product_aliases.csv",
             records(db, "SELECT * FROM product_aliases ORDER BY product_name,product_spec_raw"),
         )
-        pointer = root / "runtime/warehouse/current.json"
-        temporary = pointer.with_suffix(".tmp")
-        write_json(
-            temporary,
-            {
-                "run_id": args.run_id,
-                "relative_path": f"runs/{args.run_id}",
-                "source_file_sha256": stage["source_file_sha256"],
-                "verified": True,
-            },
+        publish_snapshot(
+            root / "runtime",
+            args.run_id,
+            stage["source_file_sha256"],
+            stage.get("expected_parent_run_id"),
         )
-        temporary.replace(pointer)
         print(json.dumps(report, ensure_ascii=False, default=str))
 
 
