@@ -1,0 +1,50 @@
+蓉城价览 Windows 64位完整运行包
+
+第一次使用
+1. 安装并打开Docker Desktop，使用WSL2和Linux容器模式，等待引擎启动完成。
+   官方安装说明：https://docs.docker.com/desktop/setup/install/windows-install/
+2. 把整个ZIP完整解压到本机一个目录，例如D:\chengdu-market-demo。
+3. 双击start.cmd，等待镜像导入和4个服务就绪。脚本会自动打开网页。
+4. 网页地址：http://127.0.0.1:18880/
+
+不需要在Windows安装Python、venv、Node、pnpm、Java、Kafka或Spark。
+应用镜像中已有Python依赖、后端程序、编译后的前端和训练环境。
+运行包带有真实数据仓库、已有预测模型和Spark Kafka连接器。Docker准备好之后，启动应用不需要联网下载依赖。
+初始数据为75,726条真实来源记录、105期、18个市场；截至2026-11-24。
+37个规格有未来4周模型结果。历史监测价与未来预测分别保存。
+
+电脑准备
+建议16GB内存，留出至少20GB磁盘空间。Docker应有足够可用内存；导入和训练繁忙时可给Docker约8GB内存。
+Docker Desktop的安装或WSL2首次配置可能需要联网、管理员操作及重启，以官方安装说明和本机提示为准。
+不要在ZIP预览窗口内直接运行，也不要只复制start.cmd。
+
+日常使用
+启动：双击start.cmd。首次以外会复用镜像、数据和模型。
+停止：双击stop.cmd。保留数据、导入任务和模型。
+检查：双击check.cmd。显示服务状态及最近日志。
+每次启动前保留同一解压目录。runtime是日后新增数据、模型和复核记录的持久化位置。
+已有runtime时启动脚本不会重新覆盖；initial-state.zip仅用于第一次初始化。
+
+端口已占用
+在该目录打开PowerShell，执行：
+powershell -NoProfile -ExecutionPolicy Bypass -File .\start.ps1 -Port 18885
+再访问http://127.0.0.1:18885/。检查与停止脚本会记住最后使用的配置。
+
+演示建议
+1. 历史页选择籼米，核对17/18覆盖及原始无报价。
+2. 预测页选择茄子，查看真实回测与未来四周模型结果。
+3. 数据管理上传samples\latest_week.csv，预览会识别738条重复，确认后不会重复入库。
+4. 预警与复核查看最新3项提示，运行概况检查4项服务。
+
+文件说明
+images.tar.gz：后端、预测及Kafka的实际Docker镜像。
+initial-state.zip：已验收的真实仓库、对应模型及实验记录。
+connectors：启动Spark所需的Kafka连接器与配套JAR。
+source-data.zip：用户原始长表、宽表及Excel，保留原值。
+source-code.zip：打包时的Git源码；继续开发也可从Gitee克隆。
+samples：完整真实最新一期，供文件录入演示。
+bundle.json：版本、镜像ID及文件校验值。
+
+源码地址：https://gitee.com/stephen-yi/chengdu-market-prices
+Docker镜像存档机制：https://docs.docker.com/reference/cli/docker/image/save/
+Docker镜像导入机制：https://docs.docker.com/reference/cli/docker/image/load/
